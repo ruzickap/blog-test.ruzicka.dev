@@ -2,7 +2,7 @@
 # https://github.com/DavidAnson/markdownlint/issues/199
 MD025:
   front_matter_title: ""
-MD041: true
+MD041: false
 
 # Line length - https://github.com/DavidAnson/markdownlint/blob/master/doc/Rules.md#md013---line-length
 MD013:
