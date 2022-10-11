@@ -31,9 +31,15 @@ jobs:
           mkdir public
           cp LICENSE README.md public/
 
-      - name: Build
+      - name: Build hugo pages
         run: |
-          hugo --gc --contentDir public
+          TEST_DOMAIN="$( echo ${{ github.event.repository.name }} | tr . - ).pages.dev"
+          sed -i "s/${{ github.event.repository.name }}/${TEST_DOMAIN}/" config.toml
+          hugo --gc --destination public
+          cd hugo-blowfish
+          hugo --gc --baseURL "https://${TEST_DOMAIN}/hugo-blowfish" --destination ../public/hugo-blowfish
+          cd ../hugo-loveit
+          hugo --gc --baseURL "https://${TEST_DOMAIN}/hugo-loveit" --destination ../public/hugo-loveit
 
       # - name: Check broken links
       #   uses: ruzickap/action-my-broken-link-checker@v2
@@ -55,8 +61,9 @@ jobs:
         uses: cloudflare/pages-action@1
         if: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/gh-pages' }}
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: blog-test-ruzicka-dev
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          branch: main
           directory: ./public
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          projectName: blog-test-ruzicka-dev

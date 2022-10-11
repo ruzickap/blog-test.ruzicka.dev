@@ -1,3 +1,12 @@
 [submodule "themes/lynx"]
 	path = themes/lynx
 	url = https://github.com/jpanther/lynx.git
+[submodule "hugo-blowfish/themes/blowfish"]
+	path = hugo-blowfish/themes/blowfish
+	url = https://github.com/nunocoracao/blowfish.git
+[submodule "hugo-loveit/themes/LoveIt"]
+	path = hugo-loveit/themes/LoveIt
+	url = https://github.com/dillonzq/LoveIt.git
+[submodule "jekyll-chirpy/assets/lib"]
+	path = jekyll-chirpy/assets/lib
+	url = https://github.com/cotes2020/chirpy-static-assets.git
