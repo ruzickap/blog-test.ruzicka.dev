@@ -1,0 +1,62 @@
+name: gh-pages-build
+
+on:
+  workflow_call:
+  push:
+
+env:
+  # renovate: datasource=github-tags depName=gohugoio/hugo
+  HUGO_VERSION: 0.104.2
+
+jobs:
+  gh-pages-build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      deployments: write
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: ${{ env.HUGO_VERSION }}
+
+      - name: Prepare public directory
+        run: |
+          mkdir public
+          cp LICENSE README.md public/
+
+      - name: Build
+        run: |
+          hugo --gc --contentDir public
+
+      # - name: Check broken links
+      #   uses: ruzickap/action-my-broken-link-checker@v2
+      #   with:
+      #     url: https://${{ github.event.repository.name }}
+      #     pages_path: ./public
+      #     cmd_params: '--exclude=(linkedin.com) --max-connections-per-host=5 --color=always --rate-limit=5 --header="User-Agent:curl/7.54.0" --skip-tls-verification'
+
+      - name: Publish to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.ref == 'refs/heads/main' }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          force_orphan: true
+          cname: ${{ github.event.repository.name }}
+
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/pages-action@1
+        if: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/gh-pages' }}
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: blog-test-ruzicka-dev
+          directory: ./public
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
