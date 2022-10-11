@@ -26,27 +26,53 @@ jobs:
         with:
           hugo-version: ${{ env.HUGO_VERSION }}
 
+      - uses: actions/cache@v3
+        with:
+          path: jekyll-chirpy/vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
+
       - name: Prepare public directory
         run: |
           mkdir public
           cp LICENSE README.md public/
 
+      - name: Set BASE_DOMAIN
+        id: base_domain
+        run: |
+          if [[ "${GITHUB_BASE_REF}" = "main" ]]; then
+            BASE_DOMAIN="${{ github.event.repository.name }}"
+          else
+            BASE_DOMAIN="$( echo ${{ github.event.repository.name }} | tr . - ).pages.dev"
+          fi
+          echo "BASE_DOMAIN=${BASE_DOMAIN}" | tee -a "${GITHUB_OUTPUT}"
+
+      - uses: helaili/jekyll-action@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          jekyll_src: jekyll-chirpy
+          build_only: true
+          build_dir: ../public
+          target_path: jekyll-chirpy
+          jekyll_build_options: --baseurl /jekyll-chirpy/
+
       - name: Build hugo pages
         run: |
-          TEST_DOMAIN="$( echo ${{ github.event.repository.name }} | tr . - ).pages.dev"
-          sed -i "s/${{ github.event.repository.name }}/${TEST_DOMAIN}/" config.toml
+          # Change links inside config.toml
+          sed -i "s/${{ github.event.repository.name }}/${{ steps.base_domain.outputs.BASE_DOMAIN }}/" config.toml
           hugo --gc --destination public
           cd hugo-blowfish
-          hugo --gc --baseURL "https://${TEST_DOMAIN}/hugo-blowfish" --destination ../public/hugo-blowfish
+          hugo --gc --baseURL "https://${{ steps.base_domain.outputs.BASE_DOMAIN }}/hugo-blowfish" --destination ../public/hugo-blowfish
           cd ../hugo-loveit
-          hugo --gc --baseURL "https://${TEST_DOMAIN}/hugo-loveit" --destination ../public/hugo-loveit
+          hugo --gc --baseURL "https://${{ steps.base_domain.outputs.BASE_DOMAIN }}/hugo-loveit" --destination ../public/hugo-loveit
 
       # - name: Check broken links
       #   uses: ruzickap/action-my-broken-link-checker@v2
       #   with:
-      #     url: https://${{ github.event.repository.name }}
+      #     url: https://${{ steps.base_domain.outputs.BASE_DOMAIN }}
       #     pages_path: ./public
-      #     cmd_params: '--exclude=(linkedin.com) --max-connections-per-host=5 --color=always --rate-limit=5 --header="User-Agent:curl/7.54.0" --skip-tls-verification'
+      #     cmd_params: '--exclude=(linkedin.com) --buffer-size=8192 --max-connections-per-host=5 --color=always --rate-limit=5 --header="User-Agent:curl/7.54.0" --skip-tls-verification'
 
       - name: Publish to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3

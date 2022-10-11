@@ -8,3 +8,10 @@
 public/
 resources/_gen/
 .hugo_build.lock
+hugo-blowfish/resources/_gen/
+hugo-loveit/resources/_gen/
+
+# Generated files by Jekyll
+.jekyll-cache
+_site
+Gemfile.lock
