@@ -19,6 +19,7 @@ disableKinds = ["taxonomy", "term"]
     { link = { href = "https://blog-test.ruzicka.dev/hugo-blowfish", text = "Hugo Blowfish" } },
     { link = { href = "https://blog-test.ruzicka.dev/hugo-loveit", text = "Hugo LoveIt" } },
     { link = { href = "https://blog-test.ruzicka.dev/jekyll-chirpy", text = "Jekyll Chirpy" } },
+    { link = { href = "https://blog-test.ruzicka.dev/docosaurus-test", text = "Docosaurus Test" } },
     # { amazon = "https://www.amazon.com/hz/wishlist/ls/wishlist-id" },
     # { apple = "https://www.apple.com" },
     # { codepen = "https://codepen.io/username" },

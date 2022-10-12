@@ -26,6 +26,10 @@ jobs:
         with:
           hugo-version: ${{ env.HUGO_VERSION }}
 
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
       - uses: actions/cache@v3
         with:
           path: jekyll-chirpy/vendor/bundle
@@ -54,6 +58,7 @@ jobs:
           cp -r my-test-posts/* hugo-blowfish/content/
           cp -r my-test-posts/* hugo-loveit/content/
           cp -r my-test-posts/* jekyll-chirpy/_posts/
+          cp -r my-test-posts/posts/* docosaurus-test/blog/
 
       - uses: helaili/jekyll-action@v2
         with:
@@ -63,6 +68,12 @@ jobs:
           build_dir: ../public
           target_path: jekyll-chirpy
           jekyll_build_options: --baseurl /jekyll-chirpy/
+
+      - name: Build Docosaurus
+        run: |
+          sed -i 's/${{ github.event.repository.name }}/${{ steps.base_domain.outputs.BASE_DOMAIN }}/' docosaurus-test/docusaurus.config.js
+          npm --prefix docosaurus-test install
+          npm --prefix docosaurus-test run build -- --out-dir ../public/docosaurus-test
 
       - name: Build hugo pages
         run: |
