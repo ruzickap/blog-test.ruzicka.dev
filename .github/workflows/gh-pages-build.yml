@@ -48,6 +48,13 @@ jobs:
           fi
           echo "BASE_DOMAIN=${BASE_DOMAIN}" | tee -a "${GITHUB_OUTPUT}"
 
+      - name: Copy posts to blog directories
+        run: |
+          mkdir -p {hugo-blowfish,hugo-loveit}/content jekyll-chirpy/_posts
+          cp -r my-test-posts/* hugo-blowfish/content/
+          cp -r my-test-posts/* hugo-loveit/content/
+          cp -r my-test-posts/* jekyll-chirpy/_posts/
+
       - uses: helaili/jekyll-action@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
