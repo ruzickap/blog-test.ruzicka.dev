@@ -1,6 +1,8 @@
 ---
+slug: first-post
 title: "First_post"
-author: Petr Ruzicka
+# jekyll-chirpy needs "author" parameter
+authors: Petr Ruzicka
 date: 2021-10-03
 description: Test123 description
 categories: [Test1, Test2]
