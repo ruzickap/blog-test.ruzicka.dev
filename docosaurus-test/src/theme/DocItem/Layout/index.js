@@ -56,7 +56,7 @@ export default function DocItemLayout({children}) {
           id="comments"
           repo="ruzickap/blog-test.ruzicka.dev"
           repoId="R_kgDOIL_PkQ"
-          category="Comments"
+          category="General"
           categoryId="DIC_kwDOIL_Pkc4CR711"
           mapping="pathname"
           reactionsEnabled="1"

@@ -450,11 +450,11 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       # giscus comment config (https://giscus.app/)
       [params.page.comment.giscus]
         # You can refer to the official documentation of giscus to use the following configuration.
-        enable = false
-        repo = ""
-        repoId = ""
-        category = "Announcements"
-        categoryId = ""
+        enable = true
+        repo = "ruzickap/blog-test.ruzicka.dev"
+        repoId = "R_kgDOIL_PkQ"
+        category = "General"
+        categoryId = "DIC_kwDOIL_Pkc4CR711"
         # automatically adapt the current theme i18n configuration when empty
         lang = ""
         mapping = "pathname"
