@@ -23,7 +23,7 @@ timezone: Europe/Prague
 
 title: Petr's Blog # the main title
 
-tagline: Petr's Blog - test123 # it will display as the sub-title
+tagline: DevOps • GitOps • K8s # it will display as the sub-title
 
 description: >- # used by seo meta and the atom feed
   Blogging about DevOps, Kubernets, RPi, tips, ...
@@ -50,13 +50,13 @@ social:
     - https://www.facebook.com/petr.ruzicka
     - https://www.linkedin.com/in/petrruzicka/
 
-google_site_verification: # fill in to your verification string
+google_site_verification: google-site-verification=OzW5x4nk33yV52ZbwXGIrnszdGLxdFAo6aQVSTyf08U # fill in to your verification string
 
 # ↑ --------------------------
 # The end of `jekyll-seo-tag` settings
 
 google_analytics:
-  id: # fill in your Google Analytics ID
+  id: G-2QMNQX8RNG # fill in your Google Analytics ID
   # Google Analytics pageviews report settings
   pv:
     proxy_endpoint: # fill in the Google Analytics superProxy endpoint of Google App Engine
@@ -100,9 +100,9 @@ comments:
   # Giscus options › https://giscus.app
   giscus:
     repo: ruzickap/blog-test.ruzicka.dev # <gh-username>/<repo>
-    repo_id:
-    category:
-    category_id:
+    repo_id: R_kgDOIL_PkQ
+    category: General
+    category_id: DIC_kwDOIL_Pkc4CR711
     mapping: # optional, default to 'pathname'
     input_position: # optional, default to 'bottom'
     lang: # optional, default to the value of `site.lang`
