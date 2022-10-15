@@ -24,12 +24,15 @@ jobs:
           BASH_SHFMT_ARGUMENTS: --indent 2 --space-redirects
           CSS_STYLELINT_FILTER_REGEX_EXCLUDE: docosaurus-test/src/
           DISABLE_LINTERS: MARKDOWN_MARKDOWN_LINK_CHECK,SPELL_CSPELL,SPELL_MISSPELL,YAML_V8R
+          GITHUB_COMMENT_REPORTER: false
+          GITHUB_STATUS_REPORTER: true
           HTML_HTMLHINT_FILTER_REGEX_EXCLUDE: /index.html
           FORMATTERS_DISABLE_ERRORS: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JAVASCRIPT_STANDARD_FILTER_REGEX_EXCLUDE: docosaurus-test/
           MARKDOWN_MARKDOWNLINT_CONFIG_FILE: .markdownlint.yml
           PRINT_ALPACA: false
+          SARIF_REPORTER: true
           VALIDATE_ALL_CODEBASE: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
 
       - name: Create Pull Request with applied fixes
@@ -58,3 +61,9 @@ jobs:
         with:
           branch: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref }}
           commit_message: "[MegaLinter] Apply linters fixes"
+
+      - name: Upload MegaLinter scan results to GitHub Security tab
+        if: ${{ success() }} || ${{ failure() }}
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: "megalinter-reports/megalinter-report.sarif"

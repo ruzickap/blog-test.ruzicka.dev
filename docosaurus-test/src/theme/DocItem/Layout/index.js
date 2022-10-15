@@ -59,7 +59,7 @@ export default function DocItemLayout({children}) {
           category="General"
           categoryId="DIC_kwDOIL_Pkc4CR711"
           mapping="pathname"
-          reactionsEnabled="1"
+          reactionsEnabled="0"
           emitMetadata="0"
           inputPosition="top"
           theme={colorMode}
