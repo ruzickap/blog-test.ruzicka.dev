@@ -458,7 +458,7 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
         # automatically adapt the current theme i18n configuration when empty
         lang = ""
         mapping = "pathname"
-        reactionsEnabled = "1"
+        reactionsEnabled = "0"
         emitMetadata = "0"
         inputPosition = "bottom"
         lazyLoading = false
