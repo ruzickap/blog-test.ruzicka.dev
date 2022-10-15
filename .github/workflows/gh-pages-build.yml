@@ -45,8 +45,7 @@ jobs:
       - name: Set BASE_DOMAIN
         id: base_domain
         run: |
-          echo "${GITHUB_BASE_REF}"
-          if [[ "${GITHUB_BASE_REF}" = "main" ]]; then
+          if [[ "${GITHUB_REF_NAME}" = "main" ]]; then
             BASE_DOMAIN="${{ github.event.repository.name }}"
           else
             BASE_DOMAIN="$( echo ${{ github.event.repository.name }} | tr . - ).pages.dev"
