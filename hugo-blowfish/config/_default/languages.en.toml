@@ -14,6 +14,7 @@ dateFormat = "2006-01-02"
 
 [author]
   name = "Petr Ruzicka"
+  # URL can not be used as image
   image = "img/blowfish_logo.png"
   headline = "DevOps • SysAdmin • Photographer"
   # bio = "A little bit about you"
