@@ -14,8 +14,6 @@ jobs:
     permissions:
       contents: write
       deployments: write
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -29,13 +27,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-
-      - uses: actions/cache@v3
-        with:
-          path: jekyll-chirpy/vendor/bundle
-          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile') }}
-          restore-keys: |
-            ${{ runner.os }}-gems-
 
       - name: Prepare public directory
         run: |
@@ -59,6 +50,11 @@ jobs:
           cp -r my-test-posts/* hugo-loveit/content/
           cp -r my-test-posts/* jekyll-chirpy/_posts/
           cp -r my-test-posts/posts/* docosaurus-test/blog/
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+          working-directory: jekyll-chirpy
 
       - uses: helaili/jekyll-action@v2
         with:
@@ -100,6 +96,12 @@ jobs:
           publish_dir: ./public
           force_orphan: true
           cname: ${{ github.event.repository.name }}
+
+      - name: Web Page
+        run: |
+          cat << EOF | tee -a "${GITHUB_STEP_SUMMARY}"
+          * :low_brightness: <https://${{ steps.base_domain.outputs.BASE_DOMAIN }}>
+          EOF
 
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@1
