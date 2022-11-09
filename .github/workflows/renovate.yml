@@ -20,14 +20,14 @@ on:
           - info
           - debug
           - trace
-  push:
-    branches:
-      - main
-    paths:
-      - .github/workflows/renovate.yml
-      - .github/renovate.json5
-  schedule:
-    - cron: "0 0,1 * * *"
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - .github/workflows/renovate.yml
+  #     - .github/renovate.json5
+  # schedule:
+  #   - cron: "0 0,1 * * *"
 
 env:
   LOG_LEVEL: info
