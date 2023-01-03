@@ -30,6 +30,7 @@ jobs:
 
       - name: Prepare public directory
         run: |
+          set -euxo pipefail
           mkdir public
           cp LICENSE README.md public/
 
@@ -45,25 +46,27 @@ jobs:
 
       - name: Copy posts to blog directories
         run: |
+          set -euxo pipefail
           mkdir -p {hugo-blowfish,hugo-loveit}/content jekyll-chirpy/_posts
           cp -r my-test-posts/* hugo-blowfish/content/
           cp -r my-test-posts/* hugo-loveit/content/
           cp -r my-test-posts/* jekyll-chirpy/_posts/
           cp -r my-test-posts/posts/* docosaurus-test/blog/
 
-      - uses: ruby/setup-ruby@v1
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
         with:
+          ruby-version: 3.1
           bundler-cache: true
           working-directory: jekyll-chirpy
 
-      - uses: helaili/jekyll-action@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          jekyll_src: jekyll-chirpy
-          build_only: true
-          build_dir: ../public
-          target_path: jekyll-chirpy
-          jekyll_build_options: --baseurl /jekyll-chirpy/
+      - name: Build site
+        run: |
+          set -euxo pipefail
+          cd jekyll-chirpy
+          bundle exec jekyll build --destination ../public/jekyll-chirpy --baseurl /jekyll-chirpy/
+        env:
+          JEKYLL_ENV: "production"
 
       - name: Build Docosaurus
         run: |
