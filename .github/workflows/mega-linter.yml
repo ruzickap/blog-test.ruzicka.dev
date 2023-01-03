@@ -30,3 +30,4 @@ jobs:
           PRINT_ALPACA: false
           SARIF_REPORTER: true
           VALIDATE_ALL_CODEBASE: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' }}
+          YAML_V8R_FILTER_REGEX_EXCLUDE: (^jekyll-chirpy/_config.yml)

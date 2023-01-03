@@ -50,13 +50,13 @@ social:
     - https://www.facebook.com/petr.ruzicka
     - https://www.linkedin.com/in/petrruzicka/
 
-google_site_verification: OzW5x4nk33yV52ZbwXGIrnszdGLxdFAo6aQVSTyf08U # fill in to your verification string
+google_site_verification: # fill in to your verification string
 
 # ↑ --------------------------
 # The end of `jekyll-seo-tag` settings
 
 google_analytics:
-  id: G-2QMNQX8RNG # fill in your Google Analytics ID
+  id: # fill in your Google Analytics ID
   # Google Analytics pageviews report settings
   pv:
     proxy_endpoint: # fill in the Google Analytics superProxy endpoint of Google App Engine
