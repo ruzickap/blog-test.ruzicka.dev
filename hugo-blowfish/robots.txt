@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://blog-test.ruzicka.dev/hugo-blowfish/sitemap.xml

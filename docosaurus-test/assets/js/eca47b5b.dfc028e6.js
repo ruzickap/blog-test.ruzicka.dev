@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdocosaurus_test=self.webpackChunkdocosaurus_test||[]).push([[4184],{2087:s=>{s.exports=JSON.parse('{"label":"Pipeline Templates","permalink":"/docosaurus-test/blog/tags/pipeline-templates","allTagsPath":"/docosaurus-test/blog/tags","count":2}')}}]);

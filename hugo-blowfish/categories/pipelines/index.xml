@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Pipelines on Petr&#39;s Blog</title>
+    <link>https://blog-test.ruzicka.dev/hugo-blowfish/categories/pipelines/</link>
+    <description>Recent content in Pipelines on Petr&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>&lt;a rel=&#34;license external nofollow noopener noreffer&#34; href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
+    <lastBuildDate>Thu, 10 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://blog-test.ruzicka.dev/hugo-blowfish/categories/pipelines/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Test EKS Post</title>
+      <link>https://blog-test.ruzicka.dev/hugo-blowfish/posts/2020/test-eks-post/</link>
+      <pubDate>Thu, 10 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog-test.ruzicka.dev/hugo-blowfish/posts/2020/test-eks-post/</guid>
+      <description>Amazon EKS Bottlerocket and Fargate # Amazon EKS Before starting with the main content, it&amp;rsquo;s necessary to provision the Amazon EKS in AWS.
+Requirements # If you would like to follow this documents and it&amp;rsquo;s task you will need to set up few environment variables.</description>
+    </item>
+    
+    <item>
+      <title>Image Test EKS Post</title>
+      <link>https://blog-test.ruzicka.dev/hugo-blowfish/posts/2020/2020-12-01-image-test/image-test-eks-post/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog-test.ruzicka.dev/hugo-blowfish/posts/2020/2020-12-01-image-test/image-test-eks-post/</guid>
+      <description>Authentication # Kubernetes Logo Keycloak # Install keycloak helm chart and modify the default values.
+helm repo add --force-update bitnami https://charts.bitnami.com/bitnami helm upgrade --install --version 5.0.6 --namespace keycloak --create-namespace --values - keycloak bitnami/keycloak &amp;lt;&amp;lt; EOF clusterDomain: ${CLUSTER_FQDN} auth: adminUser: admin adminPassword: ${MY_PASSWORD} managementUser: admin managementPassword: ${MY_PASSWORD} proxyAddressForwarding: true # https://stackoverflow.</description>
+    </item>
+    
+  </channel>
+</rss>
