@@ -1,0 +1,9 @@
+{
+  "name": "blog-test.ruzicka.dev",
+  "version": "0.0.1",
+  "standard": {
+    "ignore": [
+      "docosaurus-test/**"
+    ]
+  }
+}
