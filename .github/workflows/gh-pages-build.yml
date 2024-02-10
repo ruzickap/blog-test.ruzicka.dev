@@ -6,7 +6,7 @@ on:
 
 env:
   # renovate: datasource=github-tags depName=gohugoio/hugo
-  HUGO_VERSION: 0.105.0
+  HUGO_VERSION: 0.122.0
 
 permissions:
   contents: write
@@ -26,6 +26,7 @@ jobs:
         uses: peaceiris/actions-hugo@16361eb4acea8698b220b76c0d4e84e1fd22c61d # v2.6.0
         with:
           hugo-version: ${{ env.HUGO_VERSION }}
+          extended: true
 
       - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
         with:
@@ -73,17 +74,20 @@ jobs:
 
       - name: Build Docosaurus
         run: |
+          set -euxo pipefail
           sed -i 's/${{ github.event.repository.name }}/${{ steps.base_domain.outputs.BASE_DOMAIN }}/' docosaurus-test/docusaurus.config.js
           npm --prefix docosaurus-test install
           npm --prefix docosaurus-test run build -- --out-dir ../public/docosaurus-test
 
       - name: Build hugo pages
         run: |
+          set -euxo pipefail
           # Change links inside config.toml
           sed -i "s/${{ github.event.repository.name }}/${{ steps.base_domain.outputs.BASE_DOMAIN }}/" config.toml
           hugo --gc --destination public
           cd hugo-blowfish
-          hugo --gc --baseURL "https://${{ steps.base_domain.outputs.BASE_DOMAIN }}/hugo-blowfish" --destination ../public/hugo-blowfish
+          # Not working ...
+          # hugo --gc --baseURL "https://${{ steps.base_domain.outputs.BASE_DOMAIN }}/hugo-blowfish" --destination ../public/hugo-blowfish
           cd ../hugo-loveit
           hugo --gc --baseURL "https://${{ steps.base_domain.outputs.BASE_DOMAIN }}/hugo-loveit" --destination ../public/hugo-loveit
 

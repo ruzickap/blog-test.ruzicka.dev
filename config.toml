@@ -1,4 +1,4 @@
-# baseURL = "https://your_domain.com/"
+baseURL = "https://blog-test.ruzicka.dev"
 theme = 'lynx'
 languageCode = "en"
 defaultContentLanguage = "en"
@@ -9,8 +9,8 @@ title = "Petr's Test Blog"
 enableEmoji = true
 disableKinds = ["taxonomy", "term"]
 
-[author]
-  # name = "Your name here"
+[params.author]
+  name = "Petr Ruzicka"
   # headline = "An awesome person"
   # image = "img/author.jpg"  # path relative to static directory
 

@@ -1,23 +1,30 @@
 # -- Site Configuration --
 # Refer to the theme docs for more details about each of these parameters.
-# https://nunocoracao.github.io/blowfish/docs/getting-started/
+# https://blowfish.page/docs/getting-started/
 
 theme = "blowfish"
 # baseURL = "https://your_domain.com/"
-baseURL = "/"
 defaultContentLanguage = "en"
 
-enableRobotsTXT = true
-paginate = 20
-summaryLength = 30
+# pluralizeListTitles = "true" # hugo function useful for non-english languages, find out more in  https://gohugo.io/getting-started/configuration/#pluralizelisttitles
 
-# whether to use emoji code - disable due to https://github.com/gohugoio/hugo/issues/4978
-enableEmoji = false
+enableRobotsTXT = true
+paginate = 10
+summaryLength = 0
 
 buildDrafts = false
 buildFuture = false
 
 googleAnalytics = "G-2QMNQX8RNG"
+
+[imaging]
+  anchor = 'Center'
+
+[taxonomies]
+  tag = "tags"
+  category = "categories"
+  author = "authors"
+  series = "series"
 
 [sitemap]
   changefreq = 'daily'
@@ -26,3 +33,33 @@ googleAnalytics = "G-2QMNQX8RNG"
 
 [outputs]
   home = ["HTML", "RSS", "JSON"]
+
+[related]
+  threshold = 0
+  toLower = false
+
+    [[related.indices]]
+        name = "tags"
+        weight = 100
+
+    [[related.indices]]
+        name = "categories"
+        weight = 100
+
+    [[related.indices]]
+        name = "series"
+        weight = 50
+
+    [[related.indices]]
+        name = "authors"
+        weight = 20
+
+    [[related.indices]]
+        name = "date"
+        weight = 10
+
+    [[related.indices]]
+      applyFilter = false
+      name = 'fragmentrefs'
+      type = 'fragments'
+      weight = 10
