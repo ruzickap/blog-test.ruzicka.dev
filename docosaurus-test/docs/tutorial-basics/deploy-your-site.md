@@ -18,7 +18,7 @@ npm run build
 
 The static files are generated in the `build` folder.
 
-## Deploy your site using npm
+## Deploy your site 2
 
 Test your production build locally:
 

@@ -1,3 +1,9 @@
+---
+title: "My Projects"
+slug: "projects"
+date: 2022-10-03
+---
+
 # My Projects
 
 List of my GitHub projects:
@@ -41,8 +47,7 @@ List of my GitHub projects:
 
 ## [ruzickap.github.io](https://github.com/ruzickap/ruzickap.github.io)
 
-- Description: blog.ruzicka.dev - personal blog 🏠
-- URL: <https://ruzickap.github.io/>
+- Description: blog.ruzicka.dev - personal blog
 
 [![GitHub release](https://img.shields.io/github/v/release/ruzickap/ruzickap.github.io.svg)](https://github.com/ruzickap/ruzickap.github.io/releases/latest)
 [![GitHub license](https://img.shields.io/github/license/ruzickap/ruzickap.github.io.svg)](https://github.com/ruzickap/ruzickap.github.io/blob/main/LICENSE)
