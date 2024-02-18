@@ -16,7 +16,7 @@ disableKinds = ["taxonomy", "term"]
 
   links = [
     # { email = "mailto:petr.ruzicka@gmail.com" },
-    { link = { href = "https://blog-test.ruzicka.dev/hugo-blowfish", text = "Hugo Blowfish" } },
+    # { link = { href = "https://blog-test.ruzicka.dev/hugo-blowfish", text = "Hugo Blowfish" } },
     { link = { href = "https://blog-test.ruzicka.dev/hugo-loveit", text = "Hugo LoveIt" } },
     { link = { href = "https://blog-test.ruzicka.dev/jekyll-chirpy", text = "Jekyll Chirpy" } },
     { link = { href = "https://blog-test.ruzicka.dev/docosaurus-test", text = "Docosaurus Test" } },
