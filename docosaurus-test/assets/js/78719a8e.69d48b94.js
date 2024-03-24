@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdocosaurus_test=self.webpackChunkdocosaurus_test||[]).push([[1317],{7375:s=>{s.exports=JSON.parse('{"label":"EKS","permalink":"/docosaurus-test/blog/tags/eks","allTagsPath":"/docosaurus-test/blog/tags","count":2,"unlisted":false}')}}]);

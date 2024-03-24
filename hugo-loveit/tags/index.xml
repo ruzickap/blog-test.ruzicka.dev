@@ -1,0 +1,48 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Tags - Tag - Petr&#39;s Blog</title>
+        <link>https://blog-test.ruzicka.dev/hugo-loveit/tags/</link>
+        <description>Tags - Tag - Petr&#39;s Blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>petr.ruzicka@gmail.com (Petr Ruzicka)</managingEditor>
+            <webMaster>petr.ruzicka@gmail.com (Petr Ruzicka)</webMaster><copyright>Petr Ruzicka</copyright><lastBuildDate>Sun, 03 Oct 2021 00:00:00 &#43;0000</lastBuildDate><atom:link href="https://blog-test.ruzicka.dev/hugo-loveit/tags/" rel="self" type="application/rss+xml" /><item>
+    <title>First</title>
+    <link>https://blog-test.ruzicka.dev/hugo-loveit/tags/first/</link>
+    <pubDate>Sun, 03 Oct 2021 00:00:00 &#43;0000</pubDate>
+    <author>Petr Ruzicka</author>
+    <guid>https://blog-test.ruzicka.dev/hugo-loveit/tags/first/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>First_post</title>
+    <link>https://blog-test.ruzicka.dev/hugo-loveit/tags/first_post/</link>
+    <pubDate>Sun, 03 Oct 2021 00:00:00 &#43;0000</pubDate>
+    <author>Petr Ruzicka</author>
+    <guid>https://blog-test.ruzicka.dev/hugo-loveit/tags/first_post/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>EKS</title>
+    <link>https://blog-test.ruzicka.dev/hugo-loveit/tags/eks/</link>
+    <pubDate>Thu, 10 Dec 2020 00:00:00 &#43;0000</pubDate>
+    <author>Petr Ruzicka</author>
+    <guid>https://blog-test.ruzicka.dev/hugo-loveit/tags/eks/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Pipeline Templates</title>
+    <link>https://blog-test.ruzicka.dev/hugo-loveit/tags/pipeline-templates/</link>
+    <pubDate>Thu, 10 Dec 2020 00:00:00 &#43;0000</pubDate>
+    <author>Petr Ruzicka</author>
+    <guid>https://blog-test.ruzicka.dev/hugo-loveit/tags/pipeline-templates/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Image</title>
+    <link>https://blog-test.ruzicka.dev/hugo-loveit/tags/image/</link>
+    <pubDate>Mon, 01 Jan 0001 00:00:00 &#43;0000</pubDate>
+    <author>Petr Ruzicka</author>
+    <guid>https://blog-test.ruzicka.dev/hugo-loveit/tags/image/</guid>
+    <description><![CDATA[]]></description>
+</item>
+</channel>
+</rss>
