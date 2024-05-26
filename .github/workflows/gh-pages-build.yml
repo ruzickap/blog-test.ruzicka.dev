@@ -58,7 +58,7 @@ jobs:
           cp -r my-test-posts/posts/* docosaurus-test/blog/
 
       - name: Setup Ruby
-        uses: ruby/setup-ruby@6615b4b8a02c78c4d711c06df4b8a20aa685a45d # v1.176.2
+        uses: ruby/setup-ruby@943103cae7d3f1bb1e4951d5fcc7928b40e4b742 # v1.177.1
         with:
           ruby-version: 3.1
           bundler-cache: true
