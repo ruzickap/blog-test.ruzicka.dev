@@ -1,6 +1,4 @@
 #!/usr/bin/env ruby
-# frozen_string_literal: true
-# https://github.com/rubocop/rubocop/issues/1496
 #
 # Check for changed posts
 
