@@ -1,0 +1,22 @@
+<urlset
+    xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+    xmlns:xhtml="http://www.w3.org/1999/xhtml"
+    ><url>
+            <loc>https://blog-test.ruzicka.dev/hugo-loveit/projects/</loc><lastmod>2022-10-03T00:00:00&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://blog-test.ruzicka.dev/hugo-loveit/</loc><lastmod>2022-10-03T00:00:00&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://blog-test.ruzicka.dev/hugo-loveit/categories/</loc><lastmod>2021-10-03T00:00:00&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://blog-test.ruzicka.dev/hugo-loveit/tags/first/</loc><lastmod>2021-10-03T00:00:00&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://blog-test.ruzicka.dev/hugo-loveit/tags/first_post/</loc><lastmod>2021-10-03T00:00:00&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://blog-test.ruzicka.dev/hugo-loveit/2021-10-03-first_post/</loc><lastmod>2021-10-03T00:00:00&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://blog-test.ruzicka.dev/hugo-loveit/posts/</loc><lastmod>2021-10-03T00:00:00&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://blog-test.ruzicka.dev/hugo-loveit/tags/</loc><lastmod>2021-10-03T00:00:00&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://blog-test.ruzicka.dev/hugo-loveit/categories/test1/</loc><lastmod>2021-10-03T00:00:00&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://blog-test.ruzicka.dev/hugo-loveit/categories/test2/</loc><lastmod>2021-10-03T00:00:00&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://blog-test.ruzicka.dev/hugo-loveit/tags/eks/</loc><lastmod>2020-12-10T00:00:00&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://blog-test.ruzicka.dev/hugo-loveit/categories/eks/</loc><lastmod>2020-12-10T00:00:00&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://blog-test.ruzicka.dev/hugo-loveit/tags/pipeline-templates/</loc><lastmod>2020-12-10T00:00:00&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://blog-test.ruzicka.dev/hugo-loveit/categories/pipelines/</loc><lastmod>2020-12-10T00:00:00&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://blog-test.ruzicka.dev/hugo-loveit/2020-12-10-eks-test/</loc><lastmod>2020-12-10T00:00:00&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://blog-test.ruzicka.dev/hugo-loveit/tags/image/</loc><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://blog-test.ruzicka.dev/hugo-loveit/categories/image/</loc><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://blog-test.ruzicka.dev/hugo-loveit/readme/</loc><changefreq>weekly</changefreq><priority>0.5</priority></url></urlset>

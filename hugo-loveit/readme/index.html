@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Image Test EKS Post - Petr&#39;s Blog</title><meta name="Description" content="Petr&#39;s Blog"><meta property="og:url" content="https://blog-test.ruzicka.dev/hugo-loveit/readme/">
+  <meta property="og:site_name" content="Petr&#39;s Blog">
+  <meta property="og:title" content="Image Test EKS Post">
+  <meta property="og:description" content="Authentication Keycloak Install keycloak helm chart and modify the default values.
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 121 122 123 124 125 126 127 128 129 130 131 132 133 134 135 136 137 138 139 140 141 142 helm repo add --force-update bitnami https://charts.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:tag" content="EKS">
+    <meta property="article:tag" content="Image">
+    <meta property="article:tag" content="Pipeline Templates">
+    <meta property="og:image" content="https://blog-test.ruzicka.dev/logo.png">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://blog-test.ruzicka.dev/logo.png">
+  <meta name="twitter:title" content="Image Test EKS Post">
+  <meta name="twitter:description" content="Authentication Keycloak Install keycloak helm chart and modify the default values.
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 121 122 123 124 125 126 127 128 129 130 131 132 133 134 135 136 137 138 139 140 141 142 helm repo add --force-update bitnami https://charts.">
+      <meta name="twitter:site" content="@Ruzicka_Petr">
+<meta name="application-name" content="Petr&#39;s Blog">
+<meta name="apple-mobile-web-app-title" content="Petr&#39;s Blog"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="https://raw.githubusercontent.com/cncf/artwork/40e2e8948509b40e4bad479446aaec18d6273bf2/projects/kubernetes/icon/color/kubernetes-icon-color.svg"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://blog-test.ruzicka.dev/hugo-loveit/readme/" /><link rel="next" href="https://blog-test.ruzicka.dev/hugo-loveit/2020-12-10-eks-test/" /><link rel="stylesheet" href="/hugo-loveit/css/style.min.css"><link rel="preload" href="/hugo-loveit/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/hugo-loveit/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/hugo-loveit/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/hugo-loveit/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Image Test EKS Post",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/blog-test.ruzicka.dev\/hugo-loveit\/readme\/"
+        },"genre": "posts","keywords": "EKS, Image, Pipeline Templates","wordcount":  1806 ,
+        "url": "https:\/\/blog-test.ruzicka.dev\/hugo-loveit\/readme\/","license": "Petr Ruzicka","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "Petr Ruzicka"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/hugo-loveit/" title="Petr&#39;s Blog"><span class="header-title-pre"><i class="fa-solid fa-house-user"></i></span>Petr&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/hugo-loveit/posts/"><i class="fa-solid fa-blog"></i> Posts </a><a class="menu-item" href="/hugo-loveit/projects/"><i class="fa-solid fa-list"></i> Projects </a><a class="menu-item" href="/hugo-loveit/tags/"><i class="fa-solid fa-tags"></i> Tags </a><a class="menu-item" href="/hugo-loveit/categories/"><i class="fa-solid fa-layer-group"></i> Categories </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/hugo-loveit/" title="Petr&#39;s Blog"><span class="header-title-pre"><i class="fa-solid fa-house-user"></i></span>Petr&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/hugo-loveit/posts/" title=""><i class="fa-solid fa-blog"></i>Posts</a><a class="menu-item" href="/hugo-loveit/projects/" title=""><i class="fa-solid fa-list"></i>Projects</a><a class="menu-item" href="/hugo-loveit/tags/" title=""><i class="fa-solid fa-tags"></i>Tags</a><a class="menu-item" href="/hugo-loveit/categories/" title=""><i class="fa-solid fa-layer-group"></i>Categories</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Image Test EKS Post</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://petr.ruzicka.dev" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Petr Ruzicka</a></span>&nbsp;<span class="post-category">included in <a href="/hugo-loveit/categories/eks/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>EKS</a>&nbsp;<a href="/hugo-loveit/categories/image/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Image</a>&nbsp;<a href="/hugo-loveit/categories/pipelines/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Pipelines</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="0001-01-01">0001-01-01</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;1806 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;9 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="true">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#keycloak">Keycloak</a></li>
+    <li><a href="#oauth2-proxy---keycloak">oauth2-proxy - Keycloak</a></li>
+    <li><a href="#dex">Dex</a></li>
+    <li><a href="#oauth2-proxy">oauth2-proxy</a></li>
+    <li><a href="#gangway">Gangway</a></li>
+    <li><a href="#kube-oidc-proxy">kube-oidc-proxy</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="authentication">Authentication</h1>
+<h2 id="keycloak">Keycloak</h2>
+<p>Install <code>keycloak</code>
+<a href="https://artifacthub.io/packages/helm/bitnami/keycloak" target="_blank" rel="noopener noreffer ">helm chart</a>
+and modify the
+<a href="https://github.com/bitnami/charts/blob/master/bitnami/keycloak/values.yaml" target="_blank" rel="noopener noreffer ">default values</a>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">helm repo add --force-update bitnami https://charts.bitnami.com/bitnami
+</span></span><span class="line"><span class="cl">helm upgrade --install --version 5.0.6 --namespace keycloak --create-namespace --values - keycloak bitnami/keycloak <span class="s">&lt;&lt; EOF
+</span></span></span><span class="line"><span class="cl"><span class="s">clusterDomain: ${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">auth:
+</span></span></span><span class="line"><span class="cl"><span class="s">  adminUser: admin
+</span></span></span><span class="line"><span class="cl"><span class="s">  adminPassword: ${MY_PASSWORD}
+</span></span></span><span class="line"><span class="cl"><span class="s">  managementUser: admin
+</span></span></span><span class="line"><span class="cl"><span class="s">  managementPassword: ${MY_PASSWORD}
+</span></span></span><span class="line"><span class="cl"><span class="s">proxyAddressForwarding: true
+</span></span></span><span class="line"><span class="cl"><span class="s"># https://stackoverflow.com/questions/51616770/keycloak-restricting-user-management-to-certain-groups-while-enabling-manage-us
+</span></span></span><span class="line"><span class="cl"><span class="s">extraStartupArgs: &#34;-Dkeycloak.profile.feature.admin_fine_grained_authz=enabled&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s"># keycloakConfigCli:
+</span></span></span><span class="line"><span class="cl"><span class="s">#   enabled: true
+</span></span></span><span class="line"><span class="cl"><span class="s">#   # Workaround for bug: https://github.com/bitnami/charts/issues/6823
+</span></span></span><span class="line"><span class="cl"><span class="s">#   image:
+</span></span></span><span class="line"><span class="cl"><span class="s">#     repository: adorsys/keycloak-config-cli
+</span></span></span><span class="line"><span class="cl"><span class="s">#     tag: latest-15.0.1
+</span></span></span><span class="line"><span class="cl"><span class="s">#   configuration:
+</span></span></span><span class="line"><span class="cl"><span class="s">#     myrealm.yaml: |
+</span></span></span><span class="line"><span class="cl"><span class="s">#       realm: myrealm
+</span></span></span><span class="line"><span class="cl"><span class="s">#       enabled: true
+</span></span></span><span class="line"><span class="cl"><span class="s">#       displayName: My Realm
+</span></span></span><span class="line"><span class="cl"><span class="s">#       rememberMe: true
+</span></span></span><span class="line"><span class="cl"><span class="s">#       userManagedAccessAllowed: true
+</span></span></span><span class="line"><span class="cl"><span class="s">#       smtpServer:
+</span></span></span><span class="line"><span class="cl"><span class="s">#         from: myrealm-keycloak@${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">#         fromDisplayName: Keycloak
+</span></span></span><span class="line"><span class="cl"><span class="s">#         host: mailhog.mailhog.svc.cluster.local
+</span></span></span><span class="line"><span class="cl"><span class="s">#         port: 1025
+</span></span></span><span class="line"><span class="cl"><span class="s">#       clients:
+</span></span></span><span class="line"><span class="cl"><span class="s">#       # https://oauth2-proxy.github.io/oauth2-proxy/docs/configuration/oauth_provider/#keycloak-auth-provider
+</span></span></span><span class="line"><span class="cl"><span class="s">#       - clientId: oauth2-proxy-keycloak.${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">#         name: oauth2-proxy-keycloak.${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">#         description: &#34;OAuth2 Proxy for Keycloak&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">#         secret: ${MY_PASSWORD}
+</span></span></span><span class="line"><span class="cl"><span class="s">#         redirectUris:
+</span></span></span><span class="line"><span class="cl"><span class="s">#         - &#34;https://oauth2-proxy-keycloak.${CLUSTER_FQDN}/oauth2/callback&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">#         protocolMappers:
+</span></span></span><span class="line"><span class="cl"><span class="s">#         - name: groupMapper
+</span></span></span><span class="line"><span class="cl"><span class="s">#           protocol: openid-connect
+</span></span></span><span class="line"><span class="cl"><span class="s">#           protocolMapper: oidc-group-membership-mapper
+</span></span></span><span class="line"><span class="cl"><span class="s">#           config:
+</span></span></span><span class="line"><span class="cl"><span class="s">#             userinfo.token.claim: &#34;true&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">#             id.token.claim: &#34;true&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">#             access.token.claim: &#34;true&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">#             claim.name: groups
+</span></span></span><span class="line"><span class="cl"><span class="s">#             full.path: &#34;true&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">#       identityProviders:
+</span></span></span><span class="line"><span class="cl"><span class="s">#       # https://ultimatesecurity.pro/post/okta-oidc/
+</span></span></span><span class="line"><span class="cl"><span class="s">#       - alias: keycloak-oidc-okta
+</span></span></span><span class="line"><span class="cl"><span class="s">#         displayName: &#34;Okta&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">#         providerId: keycloak-oidc
+</span></span></span><span class="line"><span class="cl"><span class="s">#         trustEmail: true
+</span></span></span><span class="line"><span class="cl"><span class="s">#         config:
+</span></span></span><span class="line"><span class="cl"><span class="s">#           clientId: ${OKTA_CLIENT_ID}
+</span></span></span><span class="line"><span class="cl"><span class="s">#           clientSecret: ${OKTA_CLIENT_SECRET}
+</span></span></span><span class="line"><span class="cl"><span class="s">#           tokenUrl: &#34;${OKTA_ISSUER}/oauth2/default/v1/token&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">#           authorizationUrl: &#34;${OKTA_ISSUER}/oauth2/default/v1/authorize&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">#           defaultScope: &#34;openid profile email&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">#           syncMode: IMPORT
+</span></span></span><span class="line"><span class="cl"><span class="s">#       - alias: dex
+</span></span></span><span class="line"><span class="cl"><span class="s">#         displayName: &#34;Dex&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">#         providerId: keycloak-oidc
+</span></span></span><span class="line"><span class="cl"><span class="s">#         trustEmail: true
+</span></span></span><span class="line"><span class="cl"><span class="s">#         config:
+</span></span></span><span class="line"><span class="cl"><span class="s">#           clientId: keycloak.${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">#           clientSecret: ${MY_PASSWORD}
+</span></span></span><span class="line"><span class="cl"><span class="s">#           tokenUrl: https://dex.${CLUSTER_FQDN}/token
+</span></span></span><span class="line"><span class="cl"><span class="s">#           authorizationUrl: https://dex.${CLUSTER_FQDN}/auth
+</span></span></span><span class="line"><span class="cl"><span class="s">#           syncMode: IMPORT
+</span></span></span><span class="line"><span class="cl"><span class="s">#       - alias: github
+</span></span></span><span class="line"><span class="cl"><span class="s">#         displayName: &#34;Github&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">#         providerId: github
+</span></span></span><span class="line"><span class="cl"><span class="s">#         trustEmail: true
+</span></span></span><span class="line"><span class="cl"><span class="s">#         config:
+</span></span></span><span class="line"><span class="cl"><span class="s">#           clientId: ${MY_GITHUB_ORG_OAUTH_KEYCLOAK_CLIENT_ID}
+</span></span></span><span class="line"><span class="cl"><span class="s">#           clientSecret: ${MY_GITHUB_ORG_OAUTH_KEYCLOAK_CLIENT_SECRET}
+</span></span></span><span class="line"><span class="cl"><span class="s">#       users:
+</span></span></span><span class="line"><span class="cl"><span class="s">#       - username: myuser1
+</span></span></span><span class="line"><span class="cl"><span class="s">#         email: myuser1@${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">#         enabled: true
+</span></span></span><span class="line"><span class="cl"><span class="s">#         firstName: My Firstname 1
+</span></span></span><span class="line"><span class="cl"><span class="s">#         lastName: My Lastname 1
+</span></span></span><span class="line"><span class="cl"><span class="s">#         groups:
+</span></span></span><span class="line"><span class="cl"><span class="s">#           - group-admins
+</span></span></span><span class="line"><span class="cl"><span class="s">#         credentials:
+</span></span></span><span class="line"><span class="cl"><span class="s">#         - type: password
+</span></span></span><span class="line"><span class="cl"><span class="s">#           value: ${MY_PASSWORD}
+</span></span></span><span class="line"><span class="cl"><span class="s">#       - username: myuser2
+</span></span></span><span class="line"><span class="cl"><span class="s">#         email: myuser2@${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">#         enabled: true
+</span></span></span><span class="line"><span class="cl"><span class="s">#         firstName: My Firstname 2
+</span></span></span><span class="line"><span class="cl"><span class="s">#         lastName: My Lastname 2
+</span></span></span><span class="line"><span class="cl"><span class="s">#         groups:
+</span></span></span><span class="line"><span class="cl"><span class="s">#           - group-admins
+</span></span></span><span class="line"><span class="cl"><span class="s">#         credentials:
+</span></span></span><span class="line"><span class="cl"><span class="s">#         - type: password
+</span></span></span><span class="line"><span class="cl"><span class="s">#           value: ${MY_PASSWORD}
+</span></span></span><span class="line"><span class="cl"><span class="s">#       - username: myuser3
+</span></span></span><span class="line"><span class="cl"><span class="s">#         email: myuser3@${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">#         enabled: true
+</span></span></span><span class="line"><span class="cl"><span class="s">#         firstName: My Firstname 3
+</span></span></span><span class="line"><span class="cl"><span class="s">#         lastName: My Lastname 3
+</span></span></span><span class="line"><span class="cl"><span class="s">#         groups:
+</span></span></span><span class="line"><span class="cl"><span class="s">#           - group-users
+</span></span></span><span class="line"><span class="cl"><span class="s">#         credentials:
+</span></span></span><span class="line"><span class="cl"><span class="s">#         - type: password
+</span></span></span><span class="line"><span class="cl"><span class="s">#           value: ${MY_PASSWORD}
+</span></span></span><span class="line"><span class="cl"><span class="s">#       - username: myuser4
+</span></span></span><span class="line"><span class="cl"><span class="s">#         email: myuser4@${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">#         enabled: true
+</span></span></span><span class="line"><span class="cl"><span class="s">#         firstName: My Firstname 4
+</span></span></span><span class="line"><span class="cl"><span class="s">#         lastName: My Lastname 4
+</span></span></span><span class="line"><span class="cl"><span class="s">#         groups:
+</span></span></span><span class="line"><span class="cl"><span class="s">#           - group-users
+</span></span></span><span class="line"><span class="cl"><span class="s">#           - group-test
+</span></span></span><span class="line"><span class="cl"><span class="s">#         credentials:
+</span></span></span><span class="line"><span class="cl"><span class="s">#         - type: password
+</span></span></span><span class="line"><span class="cl"><span class="s">#           value: ${MY_PASSWORD}
+</span></span></span><span class="line"><span class="cl"><span class="s">#       groups:
+</span></span></span><span class="line"><span class="cl"><span class="s">#       - name: group-users
+</span></span></span><span class="line"><span class="cl"><span class="s">#       - name: group-admins
+</span></span></span><span class="line"><span class="cl"><span class="s">#       - name: group-test
+</span></span></span><span class="line"><span class="cl"><span class="s">service:
+</span></span></span><span class="line"><span class="cl"><span class="s">  type: ClusterIP
+</span></span></span><span class="line"><span class="cl"><span class="s">ingress:
+</span></span></span><span class="line"><span class="cl"><span class="s">  enabled: true
+</span></span></span><span class="line"><span class="cl"><span class="s">  hostname: keycloak.${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">  extraTls:
+</span></span></span><span class="line"><span class="cl"><span class="s">  - hosts:
+</span></span></span><span class="line"><span class="cl"><span class="s">      - keycloak.${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">    secretName: ingress-cert-${LETSENCRYPT_ENVIRONMENT}
+</span></span></span><span class="line"><span class="cl"><span class="s">networkPolicy:
+</span></span></span><span class="line"><span class="cl"><span class="s">  enabled: true
+</span></span></span><span class="line"><span class="cl"><span class="s">metrics:
+</span></span></span><span class="line"><span class="cl"><span class="s">  enabled: true
+</span></span></span><span class="line"><span class="cl"><span class="s">  serviceMonitor:
+</span></span></span><span class="line"><span class="cl"><span class="s">    enabled: true
+</span></span></span><span class="line"><span class="cl"><span class="s">postgresql:
+</span></span></span><span class="line"><span class="cl"><span class="s">  persistence:
+</span></span></span><span class="line"><span class="cl"><span class="s">    enabled: false
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="oauth2-proxy---keycloak">oauth2-proxy - Keycloak</h2>
+<p>Install <a href="https://github.com/oauth2-proxy/oauth2-proxy" target="_blank" rel="noopener noreffer ">oauth2-proxy</a> to secure
+the endpoints like (<code>prometheus.</code>, <code>alertmanager.</code>).</p>
+<p>Install <code>oauth2-proxy</code>
+<a href="https://artifacthub.io/packages/helm/oauth2-proxy/oauth2-proxy" target="_blank" rel="noopener noreffer ">helm chart</a>
+and modify the
+<a href="https://github.com/oauth2-proxy/manifests/blob/main/helm/oauth2-proxy/values.yaml" target="_blank" rel="noopener noreffer ">default values</a>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">helm repo add --force-update oauth2-proxy https://oauth2-proxy.github.io/manifests
+</span></span><span class="line"><span class="cl">helm upgrade --install --version 4.2.0 --namespace oauth2-proxy-keycloak --create-namespace --values - oauth2-proxy oauth2-proxy/oauth2-proxy <span class="s">&lt;&lt; EOF
+</span></span></span><span class="line"><span class="cl"><span class="s">config:
+</span></span></span><span class="line"><span class="cl"><span class="s">  clientID: oauth2-proxy-keycloak.${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">  clientSecret: &#34;${MY_PASSWORD}&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">  cookieSecret: &#34;$(openssl rand -base64 32 | head -c 32 | base64)&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">  configFile: |-
+</span></span></span><span class="line"><span class="cl"><span class="s">    email_domains = [ &#34;*&#34; ]
+</span></span></span><span class="line"><span class="cl"><span class="s">    upstreams = [ &#34;file:///dev/null&#34; ]
+</span></span></span><span class="line"><span class="cl"><span class="s">    whitelist_domains = &#34;.${CLUSTER_FQDN}&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">    cookie_domains = &#34;.${CLUSTER_FQDN}&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">    provider = &#34;keycloak&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">    login_url = &#34;https://keycloak.${CLUSTER_FQDN}/auth/realms/myrealm/protocol/openid-connect/auth&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">    redeem_url = &#34;https://keycloak.${CLUSTER_FQDN}/auth/realms/myrealm/protocol/openid-connect/token&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">    profile_url = &#34;https://keycloak.${CLUSTER_FQDN}/auth/realms/myrealm/protocol/openid-connect/userinfo&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">    validate_url = &#34;https://keycloak.${CLUSTER_FQDN}/auth/realms/myrealm/protocol/openid-connect/userinfo&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">    scope = &#34;openid email profile&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">    ssl_insecure_skip_verify = &#34;true&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">    insecure_oidc_skip_issuer_verification = &#34;true&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">ingress:
+</span></span></span><span class="line"><span class="cl"><span class="s">  enabled: true
+</span></span></span><span class="line"><span class="cl"><span class="s">  hosts:
+</span></span></span><span class="line"><span class="cl"><span class="s">    - oauth2-proxy-keycloak.${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">  tls:
+</span></span></span><span class="line"><span class="cl"><span class="s">    - secretName: ingress-cert-${LETSENCRYPT_ENVIRONMENT}
+</span></span></span><span class="line"><span class="cl"><span class="s">      hosts:
+</span></span></span><span class="line"><span class="cl"><span class="s">        - oauth2-proxy-keycloak.${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">metrics:
+</span></span></span><span class="line"><span class="cl"><span class="s">  servicemonitor:
+</span></span></span><span class="line"><span class="cl"><span class="s">    enabled: true
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="dex">Dex</h2>
+<p>Install <code>dex</code>
+<a href="https://artifacthub.io/packages/helm/dex/dex" target="_blank" rel="noopener noreffer ">helm chart</a>
+and modify the
+<a href="https://github.com/dexidp/helm-charts/blob/master/charts/dex/values.yaml" target="_blank" rel="noopener noreffer ">default values</a>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span><span class="lnt">80
+</span><span class="lnt">81
+</span><span class="lnt">82
+</span><span class="lnt">83
+</span><span class="lnt">84
+</span><span class="lnt">85
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">helm repo add --force-update dex https://charts.dexidp.io
+</span></span><span class="line"><span class="cl">helm upgrade --install --version 0.6.0 --namespace dex --create-namespace --values - dex dex/dex <span class="s">&lt;&lt; EOF
+</span></span></span><span class="line"><span class="cl"><span class="s">ingress:
+</span></span></span><span class="line"><span class="cl"><span class="s">  enabled: true
+</span></span></span><span class="line"><span class="cl"><span class="s">  annotations:
+</span></span></span><span class="line"><span class="cl"><span class="s">    nginx.ingress.kubernetes.io/ssl-redirect: &#34;false&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">  hosts:
+</span></span></span><span class="line"><span class="cl"><span class="s">    - host: dex.${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">      paths:
+</span></span></span><span class="line"><span class="cl"><span class="s">        - path: /
+</span></span></span><span class="line"><span class="cl"><span class="s">          pathType: ImplementationSpecific
+</span></span></span><span class="line"><span class="cl"><span class="s">  tls:
+</span></span></span><span class="line"><span class="cl"><span class="s">    - secretName: ingress-cert-${LETSENCRYPT_ENVIRONMENT}
+</span></span></span><span class="line"><span class="cl"><span class="s">      hosts:
+</span></span></span><span class="line"><span class="cl"><span class="s">        - dex.${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">config:
+</span></span></span><span class="line"><span class="cl"><span class="s">  issuer: https://dex.${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">  storage:
+</span></span></span><span class="line"><span class="cl"><span class="s">    type: kubernetes
+</span></span></span><span class="line"><span class="cl"><span class="s">    config:
+</span></span></span><span class="line"><span class="cl"><span class="s">      inCluster: true
+</span></span></span><span class="line"><span class="cl"><span class="s">  oauth2:
+</span></span></span><span class="line"><span class="cl"><span class="s">    skipApprovalScreen: true
+</span></span></span><span class="line"><span class="cl"><span class="s">  connectors:
+</span></span></span><span class="line"><span class="cl"><span class="s">    - type: github
+</span></span></span><span class="line"><span class="cl"><span class="s">      id: github
+</span></span></span><span class="line"><span class="cl"><span class="s">      name: GitHub
+</span></span></span><span class="line"><span class="cl"><span class="s">      config:
+</span></span></span><span class="line"><span class="cl"><span class="s">        clientID: ${MY_GITHUB_ORG_OAUTH_DEX_CLIENT_ID}
+</span></span></span><span class="line"><span class="cl"><span class="s">        clientSecret: ${MY_GITHUB_ORG_OAUTH_DEX_CLIENT_SECRET}
+</span></span></span><span class="line"><span class="cl"><span class="s">        redirectURI: https://dex.${CLUSTER_FQDN}/callback
+</span></span></span><span class="line"><span class="cl"><span class="s">        orgs:
+</span></span></span><span class="line"><span class="cl"><span class="s">          - name: ${MY_GITHUB_ORG_NAME}
+</span></span></span><span class="line"><span class="cl"><span class="s">    - type: oidc
+</span></span></span><span class="line"><span class="cl"><span class="s">      id: okta
+</span></span></span><span class="line"><span class="cl"><span class="s">      name: Okta
+</span></span></span><span class="line"><span class="cl"><span class="s">      config:
+</span></span></span><span class="line"><span class="cl"><span class="s">        issuer: ${OKTA_ISSUER}
+</span></span></span><span class="line"><span class="cl"><span class="s">        clientID: ${OKTA_CLIENT_ID}
+</span></span></span><span class="line"><span class="cl"><span class="s">        clientSecret: ${OKTA_CLIENT_SECRET}
+</span></span></span><span class="line"><span class="cl"><span class="s">        redirectURI: https://dex.${CLUSTER_FQDN}/callback
+</span></span></span><span class="line"><span class="cl"><span class="s">        scopes:
+</span></span></span><span class="line"><span class="cl"><span class="s">          - openid
+</span></span></span><span class="line"><span class="cl"><span class="s">          - profile
+</span></span></span><span class="line"><span class="cl"><span class="s">          - email
+</span></span></span><span class="line"><span class="cl"><span class="s">        getUserInfo: true
+</span></span></span><span class="line"><span class="cl"><span class="s">  staticClients:
+</span></span></span><span class="line"><span class="cl"><span class="s">    - id: argocd.${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">      redirectURIs:
+</span></span></span><span class="line"><span class="cl"><span class="s">        - https://argocd.${CLUSTER_FQDN}/auth/callback
+</span></span></span><span class="line"><span class="cl"><span class="s">      name: ArgoCD
+</span></span></span><span class="line"><span class="cl"><span class="s">      secret: ${MY_PASSWORD}
+</span></span></span><span class="line"><span class="cl"><span class="s">    - id: gangway.${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">      redirectURIs:
+</span></span></span><span class="line"><span class="cl"><span class="s">        - https://gangway.${CLUSTER_FQDN}/callback
+</span></span></span><span class="line"><span class="cl"><span class="s">      name: Gangway
+</span></span></span><span class="line"><span class="cl"><span class="s">      secret: ${MY_PASSWORD}
+</span></span></span><span class="line"><span class="cl"><span class="s">    - id: harbor.${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">      redirectURIs:
+</span></span></span><span class="line"><span class="cl"><span class="s">        - https://harbor.${CLUSTER_FQDN}/c/oidc/callback
+</span></span></span><span class="line"><span class="cl"><span class="s">      name: Harbor
+</span></span></span><span class="line"><span class="cl"><span class="s">      secret: ${MY_PASSWORD}
+</span></span></span><span class="line"><span class="cl"><span class="s">    - id: kiali.${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">      redirectURIs:
+</span></span></span><span class="line"><span class="cl"><span class="s">        - https://kiali.${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">      name: Kiali
+</span></span></span><span class="line"><span class="cl"><span class="s">      secret: ${MY_PASSWORD}
+</span></span></span><span class="line"><span class="cl"><span class="s">    - id: keycloak.${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">      redirectURIs:
+</span></span></span><span class="line"><span class="cl"><span class="s">        - https://keycloak.${CLUSTER_FQDN}/auth/realms/myrealm/broker/dex/endpoint
+</span></span></span><span class="line"><span class="cl"><span class="s">      name: Keycloak
+</span></span></span><span class="line"><span class="cl"><span class="s">      secret: ${MY_PASSWORD}
+</span></span></span><span class="line"><span class="cl"><span class="s">    - id: oauth2-proxy.${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">      redirectURIs:
+</span></span></span><span class="line"><span class="cl"><span class="s">        - https://oauth2-proxy.${CLUSTER_FQDN}/oauth2/callback
+</span></span></span><span class="line"><span class="cl"><span class="s">      name: OAuth2 Proxy
+</span></span></span><span class="line"><span class="cl"><span class="s">      secret: ${MY_PASSWORD}
+</span></span></span><span class="line"><span class="cl"><span class="s">    - id: vault.${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">      redirectURIs:
+</span></span></span><span class="line"><span class="cl"><span class="s">        - https://vault.${CLUSTER_FQDN}/ui/vault/auth/oidc/oidc/callback
+</span></span></span><span class="line"><span class="cl"><span class="s">        - http://localhost:8250/oidc/callback
+</span></span></span><span class="line"><span class="cl"><span class="s">      name: Vault
+</span></span></span><span class="line"><span class="cl"><span class="s">      secret: ${MY_PASSWORD}
+</span></span></span><span class="line"><span class="cl"><span class="s">  enablePasswordDB: false
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="oauth2-proxy">oauth2-proxy</h2>
+<p>Install <a href="https://github.com/oauth2-proxy/oauth2-proxy" target="_blank" rel="noopener noreffer ">oauth2-proxy</a> to secure
+the endpoints like (<code>prometheus.</code>, <code>alertmanager.</code>).</p>
+<p>Install <code>oauth2-proxy</code>
+<a href="https://artifacthub.io/packages/helm/oauth2-proxy/oauth2-proxy" target="_blank" rel="noopener noreffer ">helm chart</a>
+and modify the
+<a href="https://github.com/oauth2-proxy/manifests/blob/main/helm/oauth2-proxy/values.yaml" target="_blank" rel="noopener noreffer ">default values</a>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">helm upgrade --install --version 4.2.0 --namespace oauth2-proxy --create-namespace --values - oauth2-proxy oauth2-proxy/oauth2-proxy <span class="s">&lt;&lt; EOF
+</span></span></span><span class="line"><span class="cl"><span class="s">config:
+</span></span></span><span class="line"><span class="cl"><span class="s">  clientID: oauth2-proxy.${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">  clientSecret: &#34;${MY_PASSWORD}&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">  cookieSecret: &#34;$(openssl rand -base64 32 | head -c 32 | base64)&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">  configFile: |-
+</span></span></span><span class="line"><span class="cl"><span class="s">    email_domains = [ &#34;*&#34; ]
+</span></span></span><span class="line"><span class="cl"><span class="s">    upstreams = [ &#34;file:///dev/null&#34; ]
+</span></span></span><span class="line"><span class="cl"><span class="s">    whitelist_domains = &#34;.${CLUSTER_FQDN}&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">    cookie_domains = &#34;.${CLUSTER_FQDN}&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">    provider = &#34;oidc&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">    oidc_issuer_url = &#34;https://dex.${CLUSTER_FQDN}&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">    ssl_insecure_skip_verify = &#34;true&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">    insecure_oidc_skip_issuer_verification = &#34;true&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">ingress:
+</span></span></span><span class="line"><span class="cl"><span class="s">  enabled: true
+</span></span></span><span class="line"><span class="cl"><span class="s">  hosts:
+</span></span></span><span class="line"><span class="cl"><span class="s">    - oauth2-proxy.${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">  tls:
+</span></span></span><span class="line"><span class="cl"><span class="s">    - secretName: ingress-cert-${LETSENCRYPT_ENVIRONMENT}
+</span></span></span><span class="line"><span class="cl"><span class="s">      hosts:
+</span></span></span><span class="line"><span class="cl"><span class="s">        - oauth2-proxy.${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">metrics:
+</span></span></span><span class="line"><span class="cl"><span class="s">  servicemonitor:
+</span></span></span><span class="line"><span class="cl"><span class="s">    enabled: true
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="gangway">Gangway</h2>
+<p>Install gangway:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">helm repo add --force-update stable https://charts.helm.sh/stable
+</span></span><span class="line"><span class="cl">helm upgrade --install --version 0.4.5 --namespace gangway --create-namespace --values - gangway stable/gangway <span class="s">&lt;&lt; EOF
+</span></span></span><span class="line"><span class="cl"><span class="s"># https://github.com/helm/charts/blob/master/stable/gangway/values.yaml
+</span></span></span><span class="line"><span class="cl"><span class="s">trustedCACert: |
+</span></span></span><span class="line"><span class="cl"><span class="s">$(curl -s &#34;${LETSENCRYPT_CERTIFICATE}&#34; | sed &#34;s/^/  /&#34;)
+</span></span></span><span class="line"><span class="cl"><span class="s">gangway:
+</span></span></span><span class="line"><span class="cl"><span class="s">  clusterName: ${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">  authorizeURL: https://dex.${CLUSTER_FQDN}/auth
+</span></span></span><span class="line"><span class="cl"><span class="s">  tokenURL: https://dex.${CLUSTER_FQDN}/token
+</span></span></span><span class="line"><span class="cl"><span class="s">  audience: https://dex.${CLUSTER_FQDN}/userinfo
+</span></span></span><span class="line"><span class="cl"><span class="s">  redirectURL: https://gangway.${CLUSTER_FQDN}/callback
+</span></span></span><span class="line"><span class="cl"><span class="s">  clientID: gangway.${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">  clientSecret: ${MY_PASSWORD}
+</span></span></span><span class="line"><span class="cl"><span class="s">  apiServerURL: https://kube-oidc-proxy.${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">ingress:
+</span></span></span><span class="line"><span class="cl"><span class="s">  enabled: true
+</span></span></span><span class="line"><span class="cl"><span class="s">  annotations:
+</span></span></span><span class="line"><span class="cl"><span class="s">    nginx.ingress.kubernetes.io/auth-url: https://oauth2-proxy.${CLUSTER_FQDN}/oauth2/auth
+</span></span></span><span class="line"><span class="cl"><span class="s">    nginx.ingress.kubernetes.io/auth-signin: https://oauth2-proxy.${CLUSTER_FQDN}/oauth2/start?rd=\$scheme://\$host\$request_uri
+</span></span></span><span class="line"><span class="cl"><span class="s">  hosts:
+</span></span></span><span class="line"><span class="cl"><span class="s">    - gangway.${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">  tls:
+</span></span></span><span class="line"><span class="cl"><span class="s">    - secretName: ingress-cert-${LETSENCRYPT_ENVIRONMENT}
+</span></span></span><span class="line"><span class="cl"><span class="s">      hosts:
+</span></span></span><span class="line"><span class="cl"><span class="s">        - gangway.${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="kube-oidc-proxy">kube-oidc-proxy</h2>
+<p>The <code>kube-oidc-proxy</code> accepting connections only via HTTPS. It&rsquo;s necessary to
+configure ingress to communicate with the backend over HTTPS.</p>
+<p>Install kube-oidc-proxy:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">test</span> -d <span class="s2">&#34;tmp/</span><span class="si">${</span><span class="nv">CLUSTER_FQDN</span><span class="si">}</span><span class="s2">/kube-oidc-proxy&#34;</span> <span class="o">||</span> git clone --quiet https://github.com/jetstack/kube-oidc-proxy.git <span class="s2">&#34;tmp/</span><span class="si">${</span><span class="nv">CLUSTER_FQDN</span><span class="si">}</span><span class="s2">/kube-oidc-proxy&#34;</span>
+</span></span><span class="line"><span class="cl">git -C <span class="s2">&#34;tmp/</span><span class="si">${</span><span class="nv">CLUSTER_FQDN</span><span class="si">}</span><span class="s2">/kube-oidc-proxy&#34;</span> checkout --quiet v0.3.0
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">helm upgrade --install --namespace kube-oidc-proxy --create-namespace --values - kube-oidc-proxy <span class="s2">&#34;tmp/</span><span class="si">${</span><span class="nv">CLUSTER_FQDN</span><span class="si">}</span><span class="s2">/kube-oidc-proxy/deploy/charts/kube-oidc-proxy&#34;</span> <span class="s">&lt;&lt; EOF
+</span></span></span><span class="line"><span class="cl"><span class="s"># https://github.com/jetstack/kube-oidc-proxy/blob/master/deploy/charts/kube-oidc-proxy/values.yaml
+</span></span></span><span class="line"><span class="cl"><span class="s">oidc:
+</span></span></span><span class="line"><span class="cl"><span class="s">  clientId: gangway.${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">  issuerUrl: https://dex.${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">  usernameClaim: email
+</span></span></span><span class="line"><span class="cl"><span class="s">  caPEM: |
+</span></span></span><span class="line"><span class="cl"><span class="s">$(curl -s &#34;${LETSENCRYPT_CERTIFICATE}&#34; | sed &#34;s/^/    /&#34;)
+</span></span></span><span class="line"><span class="cl"><span class="s">ingress:
+</span></span></span><span class="line"><span class="cl"><span class="s">  annotations:
+</span></span></span><span class="line"><span class="cl"><span class="s">    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+</span></span></span><span class="line"><span class="cl"><span class="s">  enabled: true
+</span></span></span><span class="line"><span class="cl"><span class="s">  hosts:
+</span></span></span><span class="line"><span class="cl"><span class="s">    - host: kube-oidc-proxy.${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">      paths:
+</span></span></span><span class="line"><span class="cl"><span class="s">        - /
+</span></span></span><span class="line"><span class="cl"><span class="s">  tls:
+</span></span></span><span class="line"><span class="cl"><span class="s">   - secretName: ingress-cert-${LETSENCRYPT_ENVIRONMENT}
+</span></span></span><span class="line"><span class="cl"><span class="s">     hosts:
+</span></span></span><span class="line"><span class="cl"><span class="s">       - kube-oidc-proxy.${CLUSTER_FQDN}
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>If you get the credentials form the <a href="https://gangway.kube1.k8s.mylabs.dev" target="_blank" rel="noopener noreffer ">https://gangway.kube1.k8s.mylabs.dev</a>
+you will have the access to the cluster, but no rights there.</p>
+<p>Add access rights to the user:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">kubectl apply -f - <span class="s">&lt;&lt; EOF
+</span></span></span><span class="line"><span class="cl"><span class="s">apiVersion: rbac.authorization.k8s.io/v1
+</span></span></span><span class="line"><span class="cl"><span class="s">kind: Role
+</span></span></span><span class="line"><span class="cl"><span class="s">metadata:
+</span></span></span><span class="line"><span class="cl"><span class="s">  namespace: kube-prometheus-stack
+</span></span></span><span class="line"><span class="cl"><span class="s">  name: secret-reader
+</span></span></span><span class="line"><span class="cl"><span class="s">rules:
+</span></span></span><span class="line"><span class="cl"><span class="s">- apiGroups: [&#34;&#34;]
+</span></span></span><span class="line"><span class="cl"><span class="s">  resources: [&#34;secrets&#34;]
+</span></span></span><span class="line"><span class="cl"><span class="s">  verbs: [&#34;get&#34;, &#34;watch&#34;, &#34;list&#34;]
+</span></span></span><span class="line"><span class="cl"><span class="s">---
+</span></span></span><span class="line"><span class="cl"><span class="s">apiVersion: rbac.authorization.k8s.io/v1
+</span></span></span><span class="line"><span class="cl"><span class="s">kind: RoleBinding
+</span></span></span><span class="line"><span class="cl"><span class="s">metadata:
+</span></span></span><span class="line"><span class="cl"><span class="s">  name: read-secrets
+</span></span></span><span class="line"><span class="cl"><span class="s">  namespace: kube-prometheus-stack
+</span></span></span><span class="line"><span class="cl"><span class="s">subjects:
+</span></span></span><span class="line"><span class="cl"><span class="s">- kind: User
+</span></span></span><span class="line"><span class="cl"><span class="s">  name: ${MY_EMAIL}
+</span></span></span><span class="line"><span class="cl"><span class="s">  apiGroup: rbac.authorization.k8s.io
+</span></span></span><span class="line"><span class="cl"><span class="s">roleRef:
+</span></span></span><span class="line"><span class="cl"><span class="s">  kind: Role
+</span></span></span><span class="line"><span class="cl"><span class="s">  name: secret-reader
+</span></span></span><span class="line"><span class="cl"><span class="s">  apiGroup: rbac.authorization.k8s.io
+</span></span></span><span class="line"><span class="cl"><span class="s">---
+</span></span></span><span class="line"><span class="cl"><span class="s">apiVersion: rbac.authorization.k8s.io/v1
+</span></span></span><span class="line"><span class="cl"><span class="s">kind: ClusterRole
+</span></span></span><span class="line"><span class="cl"><span class="s">metadata:
+</span></span></span><span class="line"><span class="cl"><span class="s">  name: pods-reader
+</span></span></span><span class="line"><span class="cl"><span class="s">rules:
+</span></span></span><span class="line"><span class="cl"><span class="s">- apiGroups: [&#34;&#34;]
+</span></span></span><span class="line"><span class="cl"><span class="s">  resources: [&#34;pods&#34;]
+</span></span></span><span class="line"><span class="cl"><span class="s">  verbs: [&#34;get&#34;, &#34;watch&#34;, &#34;list&#34;]
+</span></span></span><span class="line"><span class="cl"><span class="s">---
+</span></span></span><span class="line"><span class="cl"><span class="s">apiVersion: rbac.authorization.k8s.io/v1
+</span></span></span><span class="line"><span class="cl"><span class="s">kind: ClusterRoleBinding
+</span></span></span><span class="line"><span class="cl"><span class="s">metadata:
+</span></span></span><span class="line"><span class="cl"><span class="s">  name: read-pods
+</span></span></span><span class="line"><span class="cl"><span class="s">subjects:
+</span></span></span><span class="line"><span class="cl"><span class="s">- kind: User
+</span></span></span><span class="line"><span class="cl"><span class="s">  name: ${MY_EMAIL}
+</span></span></span><span class="line"><span class="cl"><span class="s">  apiGroup: rbac.authorization.k8s.io
+</span></span></span><span class="line"><span class="cl"><span class="s">roleRef:
+</span></span></span><span class="line"><span class="cl"><span class="s">  kind: ClusterRole
+</span></span></span><span class="line"><span class="cl"><span class="s">  name: pods-reader
+</span></span></span><span class="line"><span class="cl"><span class="s">  apiGroup: rbac.authorization.k8s.io
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>The user should be able to read the secrets in <code>kube-prometheus-stack</code>
+namespace:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl describe secrets --insecure-skip-tls-verify -n kube-prometheus-stack <span class="s2">&#34;ingress-cert-</span><span class="si">${</span><span class="nv">LETSENCRYPT_ENVIRONMENT</span><span class="si">}</span><span class="s2">&#34;</span> <span class="c1"># DevSkim: ignore DS126188</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Output:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">Name:         ingress-cert-staging
+</span></span><span class="line"><span class="cl">Namespace:    kube-prometheus-stack
+</span></span><span class="line"><span class="cl">Labels:       kubed.appscode.com/origin.cluster=kube1.k8s.mylabs.dev
+</span></span><span class="line"><span class="cl">              kubed.appscode.com/origin.name=ingress-cert-staging
+</span></span><span class="line"><span class="cl">              kubed.appscode.com/origin.namespace=cert-manager
+</span></span><span class="line"><span class="cl">Annotations:  cert-manager.io/alt-names: *.kube1.k8s.mylabs.dev,kube1.k8s.mylabs.dev
+</span></span><span class="line"><span class="cl">              cert-manager.io/certificate-name: ingress-cert-staging
+</span></span><span class="line"><span class="cl">              cert-manager.io/common-name: *.kube1.k8s.mylabs.dev
+</span></span><span class="line"><span class="cl">              cert-manager.io/ip-sans:
+</span></span><span class="line"><span class="cl">              cert-manager.io/issuer-group:
+</span></span><span class="line"><span class="cl">              cert-manager.io/issuer-kind: ClusterIssuer
+</span></span><span class="line"><span class="cl">              cert-manager.io/issuer-name: letsencrypt-staging-dns
+</span></span><span class="line"><span class="cl">              cert-manager.io/uri-sans:
+</span></span><span class="line"><span class="cl">              kubed.appscode.com/origin:
+</span></span><span class="line"><span class="cl">                {&#34;namespace&#34;:&#34;cert-manager&#34;,&#34;name&#34;:&#34;ingress-cert-staging&#34;,&#34;uid&#34;:&#34;f1ed062c-23d9-4cf7-ad51-cfafd8a3b788&#34;,&#34;resourceVersion&#34;:&#34;5296&#34;}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Type:  kubernetes.io/tls
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Data
+</span></span><span class="line"><span class="cl">====
+</span></span><span class="line"><span class="cl">tls.crt:  3586 bytes
+</span></span><span class="line"><span class="cl">tls.key:  1679 bytes
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>But it&rsquo;s not allowed to delete the secrets for the user:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl delete secrets --insecure-skip-tls-verify -n kube-prometheus-stack <span class="s2">&#34;ingress-cert-</span><span class="si">${</span><span class="nv">LETSENCRYPT_ENVIRONMENT</span><span class="si">}</span><span class="s2">&#34;</span>   <span class="c1"># DevSkim: ignore DS126188</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Output:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">Error from server (Forbidden): secrets &#34;ingress-cert-staging&#34; is forbidden: User &#34;petr.ruzicka@gmail.com&#34; cannot delete resource &#34;secrets&#34; in API group &#34;&#34; in the namespace &#34;kube-prometheus-stack&#34;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>The user can not read secrets outside the <code>kube-prometheus-stack</code>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl get secrets --insecure-skip-tls-verify -n kube-system                                                          <span class="c1"># DevSkim: ignore DS126188</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Output:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">Error from server (Forbidden): secrets is forbidden: User &#34;petr.ruzicka@gmail.com&#34; cannot list resource &#34;secrets&#34; in API group &#34;&#34; in the namespace &#34;kube-system&#34;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>You can see the pods &ldquo;everywhere&rdquo;:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl get pods --insecure-skip-tls-verify -n kube-system                                                             <span class="c1"># DevSkim: ignore DS126188</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Output:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">NAME                                                         READY   STATUS    RESTARTS   AGE
+</span></span><span class="line"><span class="cl">aws-for-fluent-bit-5hxlt                                     1/1     Running   0          32m
+</span></span><span class="line"><span class="cl">aws-for-fluent-bit-dmvzq                                     1/1     Running   0          32m
+</span></span><span class="line"><span class="cl">aws-node-ggfft                                               1/1     Running   0          32m
+</span></span><span class="line"><span class="cl">aws-node-lhlvf                                               1/1     Running   0          32m
+</span></span><span class="line"><span class="cl">cluster-autoscaler-aws-cluster-autoscaler-7f878bccc8-s279k   1/1     Running   0          25m
+</span></span><span class="line"><span class="cl">coredns-59b69b4849-6v487                                     1/1     Running   0          46m
+</span></span><span class="line"><span class="cl">coredns-59b69b4849-tw2dg                                     1/1     Running   0          46m
+</span></span><span class="line"><span class="cl">ebs-csi-controller-86785d75db-7brbr                          5/5     Running   0          31m
+</span></span><span class="line"><span class="cl">ebs-csi-controller-86785d75db-gn4ll                          5/5     Running   0          31m
+</span></span><span class="line"><span class="cl">ebs-csi-node-6h9zv                                           3/3     Running   0          31m
+</span></span><span class="line"><span class="cl">ebs-csi-node-r5rj7                                           3/3     Running   0          31m
+</span></span><span class="line"><span class="cl">kube-proxy-m6dm8                                             1/1     Running   0          32m
+</span></span><span class="line"><span class="cl">kube-proxy-pdmv9                                             1/1     Running   0          32m
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>But you can not delete them:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl delete pods --insecure-skip-tls-verify -n kube-oidc-proxy --all                                                <span class="c1"># DevSkim: ignore DS126188</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Output:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">Error from server (Forbidden): pods &#34;kube-oidc-proxy-74bf5679fd-jhdmr&#34; is forbidden: User &#34;petr.ruzicka@gmail.com&#34; cannot delete resource &#34;pods&#34; in API group &#34;&#34; in the namespace &#34;kube-oidc-proxy&#34;
+</span></span></code></pre></td></tr></table>
+</div>
+</div></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 0001-01-01</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/hugo-loveit/readme/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://blog-test.ruzicka.dev/hugo-loveit/readme/" data-title="Image Test EKS Post" data-via="@Ruzicka_Petr" data-hashtags="EKS,Image,Pipeline Templates"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://blog-test.ruzicka.dev/hugo-loveit/readme/" data-hashtag="EKS"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://blog-test.ruzicka.dev/hugo-loveit/readme/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://blog-test.ruzicka.dev/hugo-loveit/readme/" data-title="Image Test EKS Post"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://blog-test.ruzicka.dev/hugo-loveit/readme/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/hugo-loveit/tags/eks/">EKS</a>,&nbsp;<a href="/hugo-loveit/tags/image/">Image</a>,&nbsp;<a href="/hugo-loveit/tags/pipeline-templates/">Pipeline Templates</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/hugo-loveit/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav">
+            <a href="/hugo-loveit/2020-12-10-eks-test/" class="next" rel="next" title="Test EKS Post">Test EKS Post<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments"><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.128.1">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://petr.ruzicka.dev" target="_blank">Petr Ruzicka</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/hugo-loveit/lib/katex/katex.min.css"><link rel="stylesheet" href="/hugo-loveit/lib/cookieconsent/cookieconsent.min.css"><script type="text/javascript" src="/hugo-loveit/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/hugo-loveit/lib/lunr/lunr.min.js"></script><script type="text/javascript" src="/hugo-loveit/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/hugo-loveit/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/hugo-loveit/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/hugo-loveit/lib/katex/katex.min.js"></script><script type="text/javascript" src="/hugo-loveit/lib/katex/contrib/auto-render.min.js"></script><script type="text/javascript" src="/hugo-loveit/lib/katex/contrib/copy-tex.min.js"></script><script type="text/javascript" src="/hugo-loveit/lib/katex/contrib/mhchem.min.js"></script><script type="text/javascript" src="/hugo-loveit/lib/cookieconsent/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":100},"comment":{"giscus":{"category":"General","categoryId":"DIC_kwDOIL_Pkc4CR711","darkTheme":"dark","emitMetadata":"0","inputPosition":"bottom","lang":"en","lazyLoading":false,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"0","repo":"ruzickap/blog-test.ruzicka.dev","repoId":"R_kgDOIL_PkQ"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/hugo-loveit/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/hugo-loveit/js/theme.min.js"></script></body>
+</html>
