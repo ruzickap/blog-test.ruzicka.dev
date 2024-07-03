@@ -1,0 +1,2389 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Test EKS Post - Petr&#39;s Blog</title><meta name="Description" content="Petr&#39;s Blog"><meta property="og:url" content="https://blog-test.ruzicka.dev/hugo-loveit/2020-12-10-eks-test/">
+  <meta property="og:site_name" content="Petr&#39;s Blog">
+  <meta property="og:title" content="Test EKS Post">
+  <meta property="og:description" content="Amazon EKS Bottlerocket and Fargate Amazon EKS Before starting with the main content, it’s necessary to provision the Amazon EKS in AWS.
+Requirements If you would like to follow this documents and it’s task you will need to set up few environment variables.
+The LETSENCRYPT_ENVIRONMENT variable should be one of:
+staging - Let’s Encrypt will create testing certificate (not valid) production - Let’s Encrypt will create valid certificate (use with care) BASE_DOMAIN contains DNS records for all your Kubernetes clusters.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2020-12-10T00:00:00+00:00">
+    <meta property="article:modified_time" content="2020-12-10T00:00:00+00:00">
+    <meta property="article:tag" content="EKS">
+    <meta property="article:tag" content="Pipeline Templates">
+    <meta property="og:image" content="https://blog-test.ruzicka.dev/logo.png">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://blog-test.ruzicka.dev/logo.png">
+  <meta name="twitter:title" content="Test EKS Post">
+  <meta name="twitter:description" content="Amazon EKS Bottlerocket and Fargate Amazon EKS Before starting with the main content, it’s necessary to provision the Amazon EKS in AWS.
+Requirements If you would like to follow this documents and it’s task you will need to set up few environment variables.
+The LETSENCRYPT_ENVIRONMENT variable should be one of:
+staging - Let’s Encrypt will create testing certificate (not valid) production - Let’s Encrypt will create valid certificate (use with care) BASE_DOMAIN contains DNS records for all your Kubernetes clusters.">
+      <meta name="twitter:site" content="@Ruzicka_Petr">
+<meta name="application-name" content="Petr&#39;s Blog">
+<meta name="apple-mobile-web-app-title" content="Petr&#39;s Blog"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="https://raw.githubusercontent.com/cncf/artwork/40e2e8948509b40e4bad479446aaec18d6273bf2/projects/kubernetes/icon/color/kubernetes-icon-color.svg"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://blog-test.ruzicka.dev/hugo-loveit/2020-12-10-eks-test/" /><link rel="prev" href="https://blog-test.ruzicka.dev/hugo-loveit/readme/" /><link rel="next" href="https://blog-test.ruzicka.dev/hugo-loveit/2021-10-03-first_post/" /><link rel="stylesheet" href="/hugo-loveit/css/style.min.css"><link rel="preload" href="/hugo-loveit/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/hugo-loveit/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/hugo-loveit/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/hugo-loveit/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Test EKS Post",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/blog-test.ruzicka.dev\/hugo-loveit\/2020-12-10-eks-test\/"
+        },"genre": "posts","keywords": "EKS, Pipeline Templates","wordcount":  5196 ,
+        "url": "https:\/\/blog-test.ruzicka.dev\/hugo-loveit\/2020-12-10-eks-test\/","datePublished": "2020-12-10T00:00:00+00:00","dateModified": "2020-12-10T00:00:00+00:00","license": "Petr Ruzicka","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "Petr Ruzicka"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/hugo-loveit/" title="Petr&#39;s Blog"><span class="header-title-pre"><i class="fa-solid fa-house-user"></i></span>Petr&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/hugo-loveit/posts/"><i class="fa-solid fa-blog"></i> Posts </a><a class="menu-item" href="/hugo-loveit/projects/"><i class="fa-solid fa-list"></i> Projects </a><a class="menu-item" href="/hugo-loveit/tags/"><i class="fa-solid fa-tags"></i> Tags </a><a class="menu-item" href="/hugo-loveit/categories/"><i class="fa-solid fa-layer-group"></i> Categories </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/hugo-loveit/" title="Petr&#39;s Blog"><span class="header-title-pre"><i class="fa-solid fa-house-user"></i></span>Petr&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/hugo-loveit/posts/" title=""><i class="fa-solid fa-blog"></i>Posts</a><a class="menu-item" href="/hugo-loveit/projects/" title=""><i class="fa-solid fa-list"></i>Projects</a><a class="menu-item" href="/hugo-loveit/tags/" title=""><i class="fa-solid fa-tags"></i>Tags</a><a class="menu-item" href="/hugo-loveit/categories/" title=""><i class="fa-solid fa-layer-group"></i>Categories</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Test EKS Post</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://petr.ruzicka.dev" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Petr Ruzicka</a></span>&nbsp;<span class="post-category">included in <a href="/hugo-loveit/categories/eks/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>EKS</a>&nbsp;<a href="/hugo-loveit/categories/pipelines/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Pipelines</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2020-12-10">2020-12-10</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;5196 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;25 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="true">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#requirements">Requirements</a></li>
+    <li><a href="#prepare-the-local-working-environment">Prepare the local working environment</a></li>
+    <li><a href="#configure-aws-route-53-domain-delegation">Configure AWS Route 53 Domain delegation</a></li>
+    <li><a href="#add-new-domain-to-route-53-policies-s3-ebs">Add new domain to Route 53, Policies, S3, EBS</a></li>
+    <li><a href="#create-amazon-eks">Create Amazon EKS</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="amazon-eks-bottlerocket-and-fargate">Amazon EKS Bottlerocket and Fargate</h1>
+<p><figure><a class="lightgallery" href="https://raw.githubusercontent.com/cncf/landscape/7f5b02ecba914a32912e77fc78e1c54d1c2f98ec/hosted_logos/amazon-eks.svg?sanitize=true" title="Amazon EKS" data-thumbnail="https://raw.githubusercontent.com/cncf/landscape/7f5b02ecba914a32912e77fc78e1c54d1c2f98ec/hosted_logos/amazon-eks.svg?sanitize=true" data-sub-html="<h2>Amazon EKS</h2><p>Amazon EKS</p>">
+        <img
+            class="lazyload"
+            src="/hugo-loveit/svg/loading.min.svg"
+            data-src="https://raw.githubusercontent.com/cncf/landscape/7f5b02ecba914a32912e77fc78e1c54d1c2f98ec/hosted_logos/amazon-eks.svg?sanitize=true"
+            data-srcset="https://raw.githubusercontent.com/cncf/landscape/7f5b02ecba914a32912e77fc78e1c54d1c2f98ec/hosted_logos/amazon-eks.svg?sanitize=true, https://raw.githubusercontent.com/cncf/landscape/7f5b02ecba914a32912e77fc78e1c54d1c2f98ec/hosted_logos/amazon-eks.svg?sanitize=true 1.5x, https://raw.githubusercontent.com/cncf/landscape/7f5b02ecba914a32912e77fc78e1c54d1c2f98ec/hosted_logos/amazon-eks.svg?sanitize=true 2x"
+            data-sizes="auto"
+            alt="https://raw.githubusercontent.com/cncf/landscape/7f5b02ecba914a32912e77fc78e1c54d1c2f98ec/hosted_logos/amazon-eks.svg?sanitize=true" />
+    </a><figcaption class="image-caption">Amazon EKS</figcaption>
+    </figure></p>
+<p>Before starting with the main content, it&rsquo;s necessary to provision
+the <a href="https://aws.amazon.com/eks/" target="_blank" rel="noopener noreffer ">Amazon EKS</a> in AWS.</p>
+<h2 id="requirements">Requirements</h2>
+<p>If you would like to follow this documents and it&rsquo;s task you will need to set up
+few environment variables.</p>
+<p>The <code>LETSENCRYPT_ENVIRONMENT</code> variable should be one of:</p>
+<ul>
+<li><code>staging</code> - Let’s Encrypt will create testing certificate (not valid)</li>
+<li><code>production</code> - Let’s Encrypt will create valid certificate (use with care)</li>
+</ul>
+<p><code>BASE_DOMAIN</code> contains DNS records for all your Kubernetes clusters. The cluster
+names will look like <code>CLUSTER_NAME</code>.<code>BASE_DOMAIN</code> (<code>kube1.k8s.mylabs.dev</code>).</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Hostname / FQDN definitions</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">BASE_DOMAIN</span><span class="o">=</span><span class="si">${</span><span class="nv">BASE_DOMAIN</span><span class="k">:-</span><span class="nv">k8s</span><span class="p">.mylabs.dev</span><span class="si">}</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">CLUSTER_NAME</span><span class="o">=</span><span class="si">${</span><span class="nv">CLUSTER_NAME</span><span class="k">:-</span><span class="nv">kube1</span><span class="si">}</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">CLUSTER_FQDN</span><span class="o">=</span><span class="s2">&#34;</span><span class="si">${</span><span class="nv">CLUSTER_NAME</span><span class="si">}</span><span class="s2">.</span><span class="si">${</span><span class="nv">BASE_DOMAIN</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">KUBECONFIG</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/kubeconfig-<span class="si">${</span><span class="nv">CLUSTER_NAME</span><span class="si">}</span>.conf
+</span></span><span class="line"><span class="cl"><span class="c1"># * &#34;production&#34; - valid certificates signed by Lets Encrypt &#34;&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># * &#34;staging&#34; - not trusted certs signed by Lets Encrypt &#34;Fake LE Intermediate X1&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">LETSENCRYPT_ENVIRONMENT</span><span class="o">=</span><span class="s2">&#34;staging&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">LETSENCRYPT_CERTIFICATE</span><span class="o">=</span><span class="s2">&#34;https://letsencrypt.org/certs/staging/letsencrypt-stg-root-x1.pem&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># export LETSENCRYPT_ENVIRONMENT=&#34;production&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># export LETSENCRYPT_CERTIFICATE=&#34;https://letsencrypt.org/certs/lets-encrypt-r3.pem&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">MY_EMAIL</span><span class="o">=</span><span class="s2">&#34;petr.ruzicka@gmail.com&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># GitHub Organization + Team where are the users who will have the admin access</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># to K8s resources (Grafana). Only users in GitHub organization</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># (MY_GITHUB_ORG_NAME) will be able to access the apps via ingress.</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">MY_GITHUB_ORG_NAME</span><span class="o">=</span><span class="s2">&#34;ruzickap-org&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">MY_GITHUB_USERNAME</span><span class="o">=</span><span class="s2">&#34;ruzickap&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># AWS Region</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">AWS_DEFAULT_REGION</span><span class="o">=</span><span class="s2">&#34;eu-west-1&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">SLACK_CHANNEL</span><span class="o">=</span><span class="s2">&#34;mylabs&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Tags used to tag the AWS resources</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">TAGS</span><span class="o">=</span><span class="s2">&#34;Owner=</span><span class="si">${</span><span class="nv">MY_EMAIL</span><span class="si">}</span><span class="s2"> Environment=Dev Group=Cloud_Native Squad=Cloud_Container_Platform compliance:na:defender=bottlerocket&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> -e <span class="s2">&#34;</span><span class="si">${</span><span class="nv">MY_EMAIL</span><span class="si">}</span><span class="s2"> | </span><span class="si">${</span><span class="nv">LETSENCRYPT_ENVIRONMENT</span><span class="si">}</span><span class="s2"> | </span><span class="si">${</span><span class="nv">CLUSTER_NAME</span><span class="si">}</span><span class="s2"> | </span><span class="si">${</span><span class="nv">BASE_DOMAIN</span><span class="si">}</span><span class="s2"> | </span><span class="si">${</span><span class="nv">CLUSTER_FQDN</span><span class="si">}</span><span class="s2">\n</span><span class="si">${</span><span class="nv">TAGS</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Prepare GitHub OAuth &ldquo;access&rdquo; credentials ans AWS &ldquo;access&rdquo; variables.</p>
+<p>You will need to configure AWS CLI: <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html" target="_blank" rel="noopener noreffer ">Configuring the AWS CLI</a></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># Common password</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">MY_PASSWORD</span><span class="o">=</span><span class="s2">&#34;xxxx&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># AWS Credentials</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">AWS_ACCESS_KEY_ID</span><span class="o">=</span><span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">AWS_SECRET_ACCESS_KEY</span><span class="o">=</span><span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">AWS_CONSOLE_ADMIN_ROLE_ARN</span><span class="o">=</span><span class="s2">&#34;arn:aws:iam::7xxxxxxxxxx7:role/xxxxxxxxxxxxxN&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># GitHub Organization OAuth Apps credentials</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">MY_GITHUB_ORG_OAUTH_DEX_CLIENT_ID</span><span class="o">=</span><span class="s2">&#34;3xxxxxxxxxxxxxxxxxx3&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">MY_GITHUB_ORG_OAUTH_DEX_CLIENT_SECRET</span><span class="o">=</span><span class="s2">&#34;7xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx8&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">MY_GITHUB_ORG_OAUTH_KEYCLOAK_CLIENT_ID</span><span class="o">=</span><span class="s2">&#34;4xxxxxxxxxxxxxxxxxx4&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">MY_GITHUB_ORG_OAUTH_KEYCLOAK_CLIENT_SECRET</span><span class="o">=</span><span class="s2">&#34;7xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxa&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Sysdig credentials</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">SYSDIG_AGENT_ACCESSKEY</span><span class="o">=</span><span class="s2">&#34;xxx&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Aqua credentials</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">AQUA_REGISTRY_USERNAME</span><span class="o">=</span><span class="s2">&#34;xxx&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">AQUA_REGISTRY_PASSWORD</span><span class="o">=</span><span class="s2">&#34;xxx&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">AQUA_ENFORCER_TOKEN</span><span class="o">=</span><span class="s2">&#34;xxx&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Splunk credentials</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">SPLUNK_HOST</span><span class="o">=</span><span class="s2">&#34;xxx&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">SPLUNK_TOKEN</span><span class="o">=</span><span class="s2">&#34;xxx&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">SPLUNK_INDEX_NAME</span><span class="o">=</span><span class="s2">&#34;xxx&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Slack incoming webhook</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">SLACK_INCOMING_WEBHOOK_URL</span><span class="o">=</span><span class="s2">&#34;https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">SLACK_BOT_API_TOKEN</span><span class="o">=</span><span class="s2">&#34;xxxx-xxxxxxxxxxxxx-xxxxxxxxxxxxx-xxxxxxxxxxxxxxxxxxxxxxxP&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Okta configuration</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">OKTA_ISSUER</span><span class="o">=</span><span class="s2">&#34;https://exxxxxxx-xxxxx-xx.okta.com&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">OKTA_CLIENT_ID</span><span class="o">=</span><span class="s2">&#34;0xxxxxxxxxxxxxxxxxx7&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">OKTA_CLIENT_SECRET</span><span class="o">=</span><span class="s2">&#34;1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxH&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Verify if all the necessary variables were set:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="k">case</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">CLUSTER_NAME</span><span class="si">}</span><span class="s2">&#34;</span> in
+</span></span><span class="line"><span class="cl">  kube1<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">MY_GITHUB_ORG_OAUTH_DEX_CLIENT_ID</span><span class="o">=</span><span class="si">${</span><span class="nv">MY_GITHUB_ORG_OAUTH_DEX_CLIENT_ID</span><span class="k">:-</span><span class="si">${</span><span class="nv">MY_GITHUB_ORG_OAUTH_DEX_CLIENT_ID_KUBE1</span><span class="si">}}</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">MY_GITHUB_ORG_OAUTH_DEX_CLIENT_SECRET</span><span class="o">=</span><span class="si">${</span><span class="nv">MY_GITHUB_ORG_OAUTH_DEX_CLIENT_SECRET</span><span class="k">:-</span><span class="si">${</span><span class="nv">MY_GITHUB_ORG_OAUTH_DEX_CLIENT_SECRET_KUBE1</span><span class="si">}}</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">MY_GITHUB_ORG_OAUTH_KEYCLOAK_CLIENT_ID</span><span class="o">=</span><span class="si">${</span><span class="nv">MY_GITHUB_ORG_OAUTH_KEYCLOAK_CLIENT_ID</span><span class="k">:-</span><span class="si">${</span><span class="nv">MY_GITHUB_ORG_OAUTH_KEYCLOAK_CLIENT_ID_KUBE1</span><span class="si">}}</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">MY_GITHUB_ORG_OAUTH_KEYCLOAK_CLIENT_SECRET</span><span class="o">=</span><span class="si">${</span><span class="nv">MY_GITHUB_ORG_OAUTH_KEYCLOAK_CLIENT_SECRET</span><span class="k">:-</span><span class="si">${</span><span class="nv">MY_GITHUB_ORG_OAUTH_KEYCLOAK_CLIENT_SECRET_KUBE1</span><span class="si">}}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">;;</span>
+</span></span><span class="line"><span class="cl">  kube2<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">MY_GITHUB_ORG_OAUTH_DEX_CLIENT_ID</span><span class="o">=</span><span class="si">${</span><span class="nv">MY_GITHUB_ORG_OAUTH_DEX_CLIENT_ID</span><span class="k">:-</span><span class="si">${</span><span class="nv">MY_GITHUB_ORG_OAUTH_DEX_CLIENT_ID_KUBE2</span><span class="si">}}</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">MY_GITHUB_ORG_OAUTH_DEX_CLIENT_SECRET</span><span class="o">=</span><span class="si">${</span><span class="nv">MY_GITHUB_ORG_OAUTH_DEX_CLIENT_SECRET</span><span class="k">:-</span><span class="si">${</span><span class="nv">MY_GITHUB_ORG_OAUTH_DEX_CLIENT_SECRET_KUBE2</span><span class="si">}}</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">MY_GITHUB_ORG_OAUTH_KEYCLOAK_CLIENT_ID</span><span class="o">=</span><span class="si">${</span><span class="nv">MY_GITHUB_ORG_OAUTH_KEYCLOAK_CLIENT_ID</span><span class="k">:-</span><span class="si">${</span><span class="nv">MY_GITHUB_ORG_OAUTH_KEYCLOAK_CLIENT_ID_KUBE2</span><span class="si">}}</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">MY_GITHUB_ORG_OAUTH_KEYCLOAK_CLIENT_SECRET</span><span class="o">=</span><span class="si">${</span><span class="nv">MY_GITHUB_ORG_OAUTH_KEYCLOAK_CLIENT_SECRET</span><span class="k">:-</span><span class="si">${</span><span class="nv">MY_GITHUB_ORG_OAUTH_KEYCLOAK_CLIENT_SECRET_KUBE2</span><span class="si">}}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">;;</span>
+</span></span><span class="line"><span class="cl">  *<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">echo</span> <span class="s2">&#34;Unsupported cluster name: </span><span class="si">${</span><span class="nv">CLUSTER_NAME</span><span class="si">}</span><span class="s2"> !&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">exit</span> <span class="m">1</span>
+</span></span><span class="line"><span class="cl">    <span class="p">;;</span>
+</span></span><span class="line"><span class="cl"><span class="k">esac</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">: <span class="s2">&#34;</span><span class="si">${</span><span class="nv">AWS_ACCESS_KEY_ID</span><span class="p">?</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">: <span class="s2">&#34;</span><span class="si">${</span><span class="nv">AWS_SECRET_ACCESS_KEY</span><span class="p">?</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">: <span class="s2">&#34;</span><span class="si">${</span><span class="nv">AWS_CONSOLE_ADMIN_ROLE_ARN</span><span class="p">?</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">: <span class="s2">&#34;</span><span class="si">${</span><span class="nv">GITHUB_TOKEN</span><span class="p">?</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">: <span class="s2">&#34;</span><span class="si">${</span><span class="nv">SLACK_INCOMING_WEBHOOK_URL</span><span class="p">?</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">: <span class="s2">&#34;</span><span class="si">${</span><span class="nv">SLACK_BOT_API_TOKEN</span><span class="p">?</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">: <span class="s2">&#34;</span><span class="si">${</span><span class="nv">MY_PASSWORD</span><span class="p">?</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">: <span class="s2">&#34;</span><span class="si">${</span><span class="nv">OKTA_ISSUER</span><span class="p">?</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">: <span class="s2">&#34;</span><span class="si">${</span><span class="nv">OKTA_CLIENT_ID</span><span class="p">?</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">: <span class="s2">&#34;</span><span class="si">${</span><span class="nv">OKTA_CLIENT_SECRET</span><span class="p">?</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="prepare-the-local-working-environment">Prepare the local working environment</h2>
+<p>::: tip
+You can skip these steps if you have all the required software already
+installed.
+:::</p>
+<p>Install necessary software:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="nb">command</span> -v apt-get <span class="p">&amp;</span>&gt; /dev/null<span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">  apt update -qq
+</span></span><span class="line"><span class="cl">  <span class="nv">DEBIAN_FRONTEND</span><span class="o">=</span>noninteractive apt-get install -y -qq apache2-utils ansible dnsutils git gnupg2 jq sudo unzip &gt; /dev/null
+</span></span><span class="line"><span class="cl"><span class="k">fi</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Install <a href="https://aws.amazon.com/cli/" target="_blank" rel="noopener noreffer ">AWS CLI</a>  binary:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="k">if</span> ! <span class="nb">command</span> -v aws <span class="p">&amp;</span>&gt; /dev/null<span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">  curl -sL <span class="s2">&#34;https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip&#34;</span> -o <span class="s2">&#34;/tmp/awscliv2.zip&#34;</span>
+</span></span><span class="line"><span class="cl">  unzip -q -o /tmp/awscliv2.zip -d /tmp/
+</span></span><span class="line"><span class="cl">  sudo /tmp/aws/install
+</span></span><span class="line"><span class="cl"><span class="k">fi</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Install <a href="https://github.com/kubernetes/kubectl" target="_blank" rel="noopener noreffer ">kubectl</a> binary:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="k">if</span> ! <span class="nb">command</span> -v kubectl <span class="p">&amp;</span>&gt; /dev/null<span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">  <span class="c1"># https://github.com/kubernetes/kubectl/releases</span>
+</span></span><span class="line"><span class="cl">  sudo curl -s -Lo /usr/local/bin/kubectl <span class="s2">&#34;https://storage.googleapis.com/kubernetes-release/release/v1.21.1/bin/</span><span class="k">$(</span>uname <span class="p">|</span> sed <span class="s2">&#34;s/./\L&amp;/g&#34;</span><span class="k">)</span><span class="s2">/amd64/kubectl&#34;</span>
+</span></span><span class="line"><span class="cl">  sudo chmod a+x /usr/local/bin/kubectl
+</span></span><span class="line"><span class="cl"><span class="k">fi</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Install <a href="https://helm.sh/" target="_blank" rel="noopener noreffer ">Helm</a>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="k">if</span> ! <span class="nb">command</span> -v helm <span class="p">&amp;</span>&gt; /dev/null<span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">  <span class="c1"># https://github.com/helm/helm/releases</span>
+</span></span><span class="line"><span class="cl">  curl -s https://raw.githubusercontent.com/helm/helm/master/scripts/get <span class="p">|</span> bash -s -- --version v3.6.0
+</span></span><span class="line"><span class="cl"><span class="k">fi</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Install <a href="https://eksctl.io/" target="_blank" rel="noopener noreffer ">eksctl</a>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="k">if</span> ! <span class="nb">command</span> -v eksctl <span class="p">&amp;</span>&gt; /dev/null<span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">  <span class="c1"># https://github.com/weaveworks/eksctl/releases</span>
+</span></span><span class="line"><span class="cl">  curl -s -L <span class="s2">&#34;https://github.com/weaveworks/eksctl/releases/download/0.60.0/eksctl_</span><span class="k">$(</span>uname<span class="k">)</span><span class="s2">_amd64.tar.gz&#34;</span> <span class="p">|</span> sudo tar xz -C /usr/local/bin/
+</span></span><span class="line"><span class="cl"><span class="k">fi</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Install <a href="https://github.com/kubernetes-sigs/aws-iam-authenticator" target="_blank" rel="noopener noreffer ">AWS IAM Authenticator for Kubernetes</a>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="k">if</span> ! <span class="nb">command</span> -v aws-iam-authenticator <span class="p">&amp;</span>&gt; /dev/null<span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">  <span class="c1"># https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html</span>
+</span></span><span class="line"><span class="cl">  sudo curl -s -Lo /usr/local/bin/aws-iam-authenticator <span class="s2">&#34;https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/</span><span class="k">$(</span>uname <span class="p">|</span> sed <span class="s2">&#34;s/./\L&amp;/g&#34;</span><span class="k">)</span><span class="s2">/amd64/aws-iam-authenticator&#34;</span>
+</span></span><span class="line"><span class="cl">  sudo chmod a+x /usr/local/bin/aws-iam-authenticator
+</span></span><span class="line"><span class="cl"><span class="k">fi</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Install <a href="https://www.vaultproject.io/downloads" target="_blank" rel="noopener noreffer ">vault</a>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="k">if</span> ! <span class="nb">command</span> -v vault <span class="p">&amp;</span>&gt; /dev/null<span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">  curl -s -L <span class="s2">&#34;https://releases.hashicorp.com/vault/1.7.2/vault_1.7.2_</span><span class="k">$(</span>uname <span class="p">|</span> sed <span class="s2">&#34;s/./\L&amp;/g&#34;</span><span class="k">)</span><span class="s2">_amd64.zip&#34;</span> -o /tmp/vault.zip
+</span></span><span class="line"><span class="cl">  sudo unzip -q /tmp/vault.zip -d /usr/local/bin/
+</span></span><span class="line"><span class="cl">  rm /tmp/vault.zip
+</span></span><span class="line"><span class="cl"><span class="k">fi</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Install <a href="https://github.com/vmware-tanzu/velero/releases" target="_blank" rel="noopener noreffer ">velero</a>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="k">if</span> ! <span class="nb">command</span> -v velero <span class="p">&amp;</span>&gt; /dev/null<span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">  curl -s -L <span class="s2">&#34;https://github.com/vmware-tanzu/velero/releases/download/v1.6.0/velero-v1.6.0-</span><span class="k">$(</span>uname <span class="p">|</span> sed <span class="s2">&#34;s/./\L&amp;/g&#34;</span><span class="k">)</span><span class="s2">-amd64.tar.gz&#34;</span> -o /tmp/velero.tar.gz
+</span></span><span class="line"><span class="cl">  sudo tar xzf /tmp/velero.tar.gz -C /usr/local/bin/ --strip-components <span class="m">1</span> <span class="s2">&#34;velero-v1.6.0-</span><span class="k">$(</span>uname <span class="p">|</span> sed <span class="s2">&#34;s/./\L&amp;/g&#34;</span><span class="k">)</span><span class="s2">-amd64/velero&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="k">fi</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Install <a href="https://toolkit.fluxcd.io/" target="_blank" rel="noopener noreffer ">flux</a>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="k">if</span> ! <span class="nb">command</span> -v flux <span class="p">&amp;</span>&gt; /dev/null<span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">  curl -s https://fluxcd.io/install.sh <span class="p">|</span> sudo bash
+</span></span><span class="line"><span class="cl"><span class="k">fi</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Install <code>calicoctl</code>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="k">if</span> ! <span class="nb">command</span> -v calicoctl <span class="p">&amp;</span>&gt; /dev/null<span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">  sudo curl -s -Lo /usr/local/bin/calicoctl https://github.com/projectcalico/calicoctl/releases/download/v3.20.0/calicoctl
+</span></span><span class="line"><span class="cl">  sudo chmod a+x /usr/local/bin/calicoctl
+</span></span><span class="line"><span class="cl"><span class="k">fi</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Install <a href="https://github.com/mozilla/sops" target="_blank" rel="noopener noreffer ">SOPS: Secrets OPerationS</a>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="k">if</span> ! <span class="nb">command</span> -v sops <span class="p">&amp;</span>&gt; /dev/null<span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">  sudo curl -s -Lo /usr/local/bin/sops <span class="s2">&#34;https://github.com/mozilla/sops/releases/download/v3.7.1/sops-v3.7.1.</span><span class="k">$(</span>uname <span class="p">|</span> sed <span class="s2">&#34;s/./\L&amp;/g&#34;</span><span class="k">)</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">  sudo chmod a+x /usr/local/bin/sops
+</span></span><span class="line"><span class="cl"><span class="k">fi</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Install <a href="https://kustomize.io/" target="_blank" rel="noopener noreffer ">kustomize</a>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="k">if</span> ! <span class="nb">command</span> -v kustomize <span class="p">&amp;</span>&gt; /dev/null<span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">  curl -s <span class="s2">&#34;https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh&#34;</span> <span class="p">|</span> sudo bash -s 4.1.2 /usr/local/bin/
+</span></span><span class="line"><span class="cl"><span class="k">fi</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Install <a href="https://github.com/rakyll/hey" target="_blank" rel="noopener noreffer ">hey</a>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="k">if</span> ! <span class="nb">command</span> -v hey <span class="p">&amp;</span>&gt; /dev/null<span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">  sudo curl -s -Lo /usr/local/bin/hey <span class="s2">&#34;https://hey-release.s3.us-east-2.amazonaws.com/hey_</span><span class="k">$(</span>uname <span class="p">|</span> sed <span class="s2">&#34;s/./\L&amp;/g&#34;</span><span class="k">)</span><span class="s2">_amd64&#34;</span>
+</span></span><span class="line"><span class="cl">  sudo chmod a+x /usr/local/bin/hey
+</span></span><span class="line"><span class="cl"><span class="k">fi</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="configure-aws-route-53-domain-delegation">Configure AWS Route 53 Domain delegation</h2>
+<p>Create DNS zone (<code>BASE_DOMAIN</code>):</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">aws route53 create-hosted-zone --output json <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --name <span class="s2">&#34;</span><span class="si">${</span><span class="nv">BASE_DOMAIN</span><span class="si">}</span><span class="s2">&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --caller-reference <span class="s2">&#34;</span><span class="k">$(</span>date<span class="k">)</span><span class="s2">&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --hosted-zone-config<span class="o">=</span><span class="s2">&#34;{\&#34;Comment\&#34;: \&#34;Created by </span><span class="si">${</span><span class="nv">MY_EMAIL</span><span class="si">}</span><span class="s2">\&#34;, \&#34;PrivateZone\&#34;: false}&#34;</span> <span class="p">|</span> jq
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Use your domain registrar to change the nameservers for your zone (for example
+&ldquo;mylabs.dev&rdquo;) to use the Amazon Route 53 nameservers. Here is the way how you
+can find out the the Route 53 nameservers:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nv">NEW_ZONE_ID</span><span class="o">=</span><span class="k">$(</span>aws route53 list-hosted-zones --query <span class="s2">&#34;HostedZones[?Name==\`</span><span class="si">${</span><span class="nv">BASE_DOMAIN</span><span class="si">}</span><span class="s2">.\`].Id&#34;</span> --output text<span class="k">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">NEW_ZONE_NS</span><span class="o">=</span><span class="k">$(</span>aws route53 get-hosted-zone --output json --id <span class="s2">&#34;</span><span class="si">${</span><span class="nv">NEW_ZONE_ID</span><span class="si">}</span><span class="s2">&#34;</span> --query <span class="s2">&#34;DelegationSet.NameServers&#34;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">NEW_ZONE_NS1</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">NEW_ZONE_NS</span><span class="si">}</span><span class="s2">&#34;</span> <span class="p">|</span> jq -r <span class="s2">&#34;.[0]&#34;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">NEW_ZONE_NS2</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">NEW_ZONE_NS</span><span class="si">}</span><span class="s2">&#34;</span> <span class="p">|</span> jq -r <span class="s2">&#34;.[1]&#34;</span><span class="k">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Create the NS record in <code>k8s.mylabs.dev</code> (<code>BASE_DOMAIN</code>) for proper zone
+delegation. This step depends on your domain registrar - I&rsquo;m using CloudFlare
+and using Ansible to automate it:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">ansible -m cloudflare_dns -c <span class="nb">local</span> -i <span class="s2">&#34;localhost,&#34;</span> localhost -a <span class="s2">&#34;zone=mylabs.dev record=</span><span class="si">${</span><span class="nv">BASE_DOMAIN</span><span class="si">}</span><span class="s2"> type=NS value=</span><span class="si">${</span><span class="nv">NEW_ZONE_NS1</span><span class="si">}</span><span class="s2"> solo=true proxied=no account_email=</span><span class="si">${</span><span class="nv">CLOUDFLARE_EMAIL</span><span class="si">}</span><span class="s2"> account_api_token=</span><span class="si">${</span><span class="nv">CLOUDFLARE_API_KEY</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">ansible -m cloudflare_dns -c <span class="nb">local</span> -i <span class="s2">&#34;localhost,&#34;</span> localhost -a <span class="s2">&#34;zone=mylabs.dev record=</span><span class="si">${</span><span class="nv">BASE_DOMAIN</span><span class="si">}</span><span class="s2"> type=NS value=</span><span class="si">${</span><span class="nv">NEW_ZONE_NS2</span><span class="si">}</span><span class="s2"> solo=false proxied=no account_email=</span><span class="si">${</span><span class="nv">CLOUDFLARE_EMAIL</span><span class="si">}</span><span class="s2"> account_api_token=</span><span class="si">${</span><span class="nv">CLOUDFLARE_API_KEY</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Output:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">localhost | CHANGED =&gt; {
+</span></span><span class="line"><span class="cl">    &#34;ansible_facts&#34;: {
+</span></span><span class="line"><span class="cl">        &#34;discovered_interpreter_python&#34;: &#34;/usr/bin/python&#34;
+</span></span><span class="line"><span class="cl">    },
+</span></span><span class="line"><span class="cl">    &#34;changed&#34;: true,
+</span></span><span class="line"><span class="cl">    &#34;result&#34;: {
+</span></span><span class="line"><span class="cl">        &#34;record&#34;: {
+</span></span><span class="line"><span class="cl">            &#34;content&#34;: &#34;ns-885.awsdns-46.net&#34;,
+</span></span><span class="line"><span class="cl">            &#34;created_on&#34;: &#34;2020-11-13T06:25:32.18642Z&#34;,
+</span></span><span class="line"><span class="cl">            &#34;id&#34;: &#34;dxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxb&#34;,
+</span></span><span class="line"><span class="cl">            &#34;locked&#34;: false,
+</span></span><span class="line"><span class="cl">            &#34;meta&#34;: {
+</span></span><span class="line"><span class="cl">                &#34;auto_added&#34;: false,
+</span></span><span class="line"><span class="cl">                &#34;managed_by_apps&#34;: false,
+</span></span><span class="line"><span class="cl">                &#34;managed_by_argo_tunnel&#34;: false,
+</span></span><span class="line"><span class="cl">                &#34;source&#34;: &#34;primary&#34;
+</span></span><span class="line"><span class="cl">            },
+</span></span><span class="line"><span class="cl">            &#34;modified_on&#34;: &#34;2020-11-13T06:25:32.18642Z&#34;,
+</span></span><span class="line"><span class="cl">            &#34;name&#34;: &#34;k8s.mylabs.dev&#34;,
+</span></span><span class="line"><span class="cl">            &#34;proxiable&#34;: false,
+</span></span><span class="line"><span class="cl">            &#34;proxied&#34;: false,
+</span></span><span class="line"><span class="cl">            &#34;ttl&#34;: 1,
+</span></span><span class="line"><span class="cl">            &#34;type&#34;: &#34;NS&#34;,
+</span></span><span class="line"><span class="cl">            &#34;zone_id&#34;: &#34;2xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxe&#34;,
+</span></span><span class="line"><span class="cl">            &#34;zone_name&#34;: &#34;mylabs.dev&#34;
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">localhost | CHANGED =&gt; {
+</span></span><span class="line"><span class="cl">    &#34;ansible_facts&#34;: {
+</span></span><span class="line"><span class="cl">        &#34;discovered_interpreter_python&#34;: &#34;/usr/bin/python&#34;
+</span></span><span class="line"><span class="cl">    },
+</span></span><span class="line"><span class="cl">    &#34;changed&#34;: true,
+</span></span><span class="line"><span class="cl">    &#34;result&#34;: {
+</span></span><span class="line"><span class="cl">        &#34;record&#34;: {
+</span></span><span class="line"><span class="cl">            &#34;content&#34;: &#34;ns-1692.awsdns-19.co.uk&#34;,
+</span></span><span class="line"><span class="cl">            &#34;created_on&#34;: &#34;2020-11-13T06:25:37.605605Z&#34;,
+</span></span><span class="line"><span class="cl">            &#34;id&#34;: &#34;9xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxb&#34;,
+</span></span><span class="line"><span class="cl">            &#34;locked&#34;: false,
+</span></span><span class="line"><span class="cl">            &#34;meta&#34;: {
+</span></span><span class="line"><span class="cl">                &#34;auto_added&#34;: false,
+</span></span><span class="line"><span class="cl">                &#34;managed_by_apps&#34;: false,
+</span></span><span class="line"><span class="cl">                &#34;managed_by_argo_tunnel&#34;: false,
+</span></span><span class="line"><span class="cl">                &#34;source&#34;: &#34;primary&#34;
+</span></span><span class="line"><span class="cl">            },
+</span></span><span class="line"><span class="cl">            &#34;modified_on&#34;: &#34;2020-11-13T06:25:37.605605Z&#34;,
+</span></span><span class="line"><span class="cl">            &#34;name&#34;: &#34;k8s.mylabs.dev&#34;,
+</span></span><span class="line"><span class="cl">            &#34;proxiable&#34;: false,
+</span></span><span class="line"><span class="cl">            &#34;proxied&#34;: false,
+</span></span><span class="line"><span class="cl">            &#34;ttl&#34;: 1,
+</span></span><span class="line"><span class="cl">            &#34;type&#34;: &#34;NS&#34;,
+</span></span><span class="line"><span class="cl">            &#34;zone_id&#34;: &#34;2xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxe&#34;,
+</span></span><span class="line"><span class="cl">            &#34;zone_name&#34;: &#34;mylabs.dev&#34;
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="add-new-domain-to-route-53-policies-s3-ebs">Add new domain to Route 53, Policies, S3, EBS</h2>
+<p>Details with examples are described on these links:</p>
+<ul>
+<li><a href="https://aws.amazon.com/blogs/opensource/introducing-fine-grained-iam-roles-service-accounts/" target="_blank" rel="noopener noreffer ">https://aws.amazon.com/blogs/opensource/introducing-fine-grained-iam-roles-service-accounts/</a></li>
+<li><a href="https://cert-manager.io/docs/configuration/acme/dns01/route53/" target="_blank" rel="noopener noreffer ">https://cert-manager.io/docs/configuration/acme/dns01/route53/</a></li>
+<li><a href="https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md" target="_blank" rel="noopener noreffer ">https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md</a></li>
+</ul>
+<p>Create CloudFormation template containing policies for Route53, S3 access
+(Harbor, Velero) and Domain. Put new domain <code>CLUSTER_FQDN</code> to the Route 53 and
+configure the DNS delegation from the <code>BASE_DOMAIN</code>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span><span class="lnt">147
+</span><span class="lnt">148
+</span><span class="lnt">149
+</span><span class="lnt">150
+</span><span class="lnt">151
+</span><span class="lnt">152
+</span><span class="lnt">153
+</span><span class="lnt">154
+</span><span class="lnt">155
+</span><span class="lnt">156
+</span><span class="lnt">157
+</span><span class="lnt">158
+</span><span class="lnt">159
+</span><span class="lnt">160
+</span><span class="lnt">161
+</span><span class="lnt">162
+</span><span class="lnt">163
+</span><span class="lnt">164
+</span><span class="lnt">165
+</span><span class="lnt">166
+</span><span class="lnt">167
+</span><span class="lnt">168
+</span><span class="lnt">169
+</span><span class="lnt">170
+</span><span class="lnt">171
+</span><span class="lnt">172
+</span><span class="lnt">173
+</span><span class="lnt">174
+</span><span class="lnt">175
+</span><span class="lnt">176
+</span><span class="lnt">177
+</span><span class="lnt">178
+</span><span class="lnt">179
+</span><span class="lnt">180
+</span><span class="lnt">181
+</span><span class="lnt">182
+</span><span class="lnt">183
+</span><span class="lnt">184
+</span><span class="lnt">185
+</span><span class="lnt">186
+</span><span class="lnt">187
+</span><span class="lnt">188
+</span><span class="lnt">189
+</span><span class="lnt">190
+</span><span class="lnt">191
+</span><span class="lnt">192
+</span><span class="lnt">193
+</span><span class="lnt">194
+</span><span class="lnt">195
+</span><span class="lnt">196
+</span><span class="lnt">197
+</span><span class="lnt">198
+</span><span class="lnt">199
+</span><span class="lnt">200
+</span><span class="lnt">201
+</span><span class="lnt">202
+</span><span class="lnt">203
+</span><span class="lnt">204
+</span><span class="lnt">205
+</span><span class="lnt">206
+</span><span class="lnt">207
+</span><span class="lnt">208
+</span><span class="lnt">209
+</span><span class="lnt">210
+</span><span class="lnt">211
+</span><span class="lnt">212
+</span><span class="lnt">213
+</span><span class="lnt">214
+</span><span class="lnt">215
+</span><span class="lnt">216
+</span><span class="lnt">217
+</span><span class="lnt">218
+</span><span class="lnt">219
+</span><span class="lnt">220
+</span><span class="lnt">221
+</span><span class="lnt">222
+</span><span class="lnt">223
+</span><span class="lnt">224
+</span><span class="lnt">225
+</span><span class="lnt">226
+</span><span class="lnt">227
+</span><span class="lnt">228
+</span><span class="lnt">229
+</span><span class="lnt">230
+</span><span class="lnt">231
+</span><span class="lnt">232
+</span><span class="lnt">233
+</span><span class="lnt">234
+</span><span class="lnt">235
+</span><span class="lnt">236
+</span><span class="lnt">237
+</span><span class="lnt">238
+</span><span class="lnt">239
+</span><span class="lnt">240
+</span><span class="lnt">241
+</span><span class="lnt">242
+</span><span class="lnt">243
+</span><span class="lnt">244
+</span><span class="lnt">245
+</span><span class="lnt">246
+</span><span class="lnt">247
+</span><span class="lnt">248
+</span><span class="lnt">249
+</span><span class="lnt">250
+</span><span class="lnt">251
+</span><span class="lnt">252
+</span><span class="lnt">253
+</span><span class="lnt">254
+</span><span class="lnt">255
+</span><span class="lnt">256
+</span><span class="lnt">257
+</span><span class="lnt">258
+</span><span class="lnt">259
+</span><span class="lnt">260
+</span><span class="lnt">261
+</span><span class="lnt">262
+</span><span class="lnt">263
+</span><span class="lnt">264
+</span><span class="lnt">265
+</span><span class="lnt">266
+</span><span class="lnt">267
+</span><span class="lnt">268
+</span><span class="lnt">269
+</span><span class="lnt">270
+</span><span class="lnt">271
+</span><span class="lnt">272
+</span><span class="lnt">273
+</span><span class="lnt">274
+</span><span class="lnt">275
+</span><span class="lnt">276
+</span><span class="lnt">277
+</span><span class="lnt">278
+</span><span class="lnt">279
+</span><span class="lnt">280
+</span><span class="lnt">281
+</span><span class="lnt">282
+</span><span class="lnt">283
+</span><span class="lnt">284
+</span><span class="lnt">285
+</span><span class="lnt">286
+</span><span class="lnt">287
+</span><span class="lnt">288
+</span><span class="lnt">289
+</span><span class="lnt">290
+</span><span class="lnt">291
+</span><span class="lnt">292
+</span><span class="lnt">293
+</span><span class="lnt">294
+</span><span class="lnt">295
+</span><span class="lnt">296
+</span><span class="lnt">297
+</span><span class="lnt">298
+</span><span class="lnt">299
+</span><span class="lnt">300
+</span><span class="lnt">301
+</span><span class="lnt">302
+</span><span class="lnt">303
+</span><span class="lnt">304
+</span><span class="lnt">305
+</span><span class="lnt">306
+</span><span class="lnt">307
+</span><span class="lnt">308
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mkdir -vp <span class="s2">&#34;tmp/</span><span class="si">${</span><span class="nv">CLUSTER_FQDN</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">cat &gt; <span class="s2">&#34;tmp/</span><span class="si">${</span><span class="nv">CLUSTER_FQDN</span><span class="si">}</span><span class="s2">/aws-route53-iam-s3-kms-asm.yml&#34;</span> <span class="s">&lt;&lt; \EOF
+</span></span></span><span class="line"><span class="cl"><span class="s">Description: &#34;Template to generate the necessary IAM Policies for access to Route53 and S3&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">Parameters:
+</span></span></span><span class="line"><span class="cl"><span class="s">  ClusterFQDN:
+</span></span></span><span class="line"><span class="cl"><span class="s">    Description: &#34;Cluster domain where all necessary app subdomains will live (subdomain of BaseDomain). Ex: kube1.k8s.mylabs.dev&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">    Type: String
+</span></span></span><span class="line"><span class="cl"><span class="s">  ClusterName:
+</span></span></span><span class="line"><span class="cl"><span class="s">    Description: &#34;Cluster Name Ex: kube1&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">    Type: String
+</span></span></span><span class="line"><span class="cl"><span class="s">  BaseDomain:
+</span></span></span><span class="line"><span class="cl"><span class="s">    Description: &#34;Base domain where cluster domains + their subdomains will live. Ex: k8s.mylabs.dev&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">    Type: String
+</span></span></span><span class="line"><span class="cl"><span class="s">Resources:
+</span></span></span><span class="line"><span class="cl"><span class="s">  # This AWS control checks whether the status of the AWS Systems Manager association compliance is COMPLIANT or NON_COMPLIANT after the association is executed on an instance.
+</span></span></span><span class="line"><span class="cl"><span class="s">  ConfigRule:
+</span></span></span><span class="line"><span class="cl"><span class="s">    Type: &#34;AWS::Config::ConfigRule&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">    Properties:
+</span></span></span><span class="line"><span class="cl"><span class="s">      ConfigRuleName: !Sub &#34;${ClusterName}-ec2-managedinstance-association-compliance-status-check&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">      Scope:
+</span></span></span><span class="line"><span class="cl"><span class="s">        ComplianceResourceTypes:
+</span></span></span><span class="line"><span class="cl"><span class="s">          - &#34;AWS::SSM::AssociationCompliance&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">      Description: &#34;A Config rule that checks whether the compliance status of the Amazon EC2 Systems Manager association compliance is COMPLIANT or NON_COMPLIANT after the association execution on the instance. The rule is compliant if the field status is COMPLIANT.&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">      Source:
+</span></span></span><span class="line"><span class="cl"><span class="s">        Owner: &#34;AWS&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">        SourceIdentifier: &#34;EC2_MANAGEDINSTANCE_ASSOCIATION_COMPLIANCE_STATUS_CHECK&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">  CloudWatchPolicy:
+</span></span></span><span class="line"><span class="cl"><span class="s">    Type: AWS::IAM::ManagedPolicy
+</span></span></span><span class="line"><span class="cl"><span class="s">    Properties:
+</span></span></span><span class="line"><span class="cl"><span class="s">      ManagedPolicyName: !Sub &#34;${ClusterFQDN}-CloudWatch&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">      Description: !Sub &#34;Policy required by Fargate to log to CloudWatch for ${ClusterFQDN}&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">      PolicyDocument:
+</span></span></span><span class="line"><span class="cl"><span class="s">        Version: &#34;2012-10-17&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">        Statement:
+</span></span></span><span class="line"><span class="cl"><span class="s">        - Effect: Allow
+</span></span></span><span class="line"><span class="cl"><span class="s">          Action:
+</span></span></span><span class="line"><span class="cl"><span class="s">          - logs:CreateLogStream
+</span></span></span><span class="line"><span class="cl"><span class="s">          - logs:CreateLogGroup
+</span></span></span><span class="line"><span class="cl"><span class="s">          - logs:DescribeLogStreams
+</span></span></span><span class="line"><span class="cl"><span class="s">          - logs:PutLogEvents
+</span></span></span><span class="line"><span class="cl"><span class="s">          Resource: &#34;*&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">  HostedZone:
+</span></span></span><span class="line"><span class="cl"><span class="s">    Type: AWS::Route53::HostedZone
+</span></span></span><span class="line"><span class="cl"><span class="s">    Properties:
+</span></span></span><span class="line"><span class="cl"><span class="s">      Name: !Ref ClusterFQDN
+</span></span></span><span class="line"><span class="cl"><span class="s">  KMSAlias:
+</span></span></span><span class="line"><span class="cl"><span class="s">    Type: AWS::KMS::Alias
+</span></span></span><span class="line"><span class="cl"><span class="s">    Properties:
+</span></span></span><span class="line"><span class="cl"><span class="s">      AliasName: !Sub &#34;alias/eks-${ClusterName}&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">      TargetKeyId: !Ref KMSKey
+</span></span></span><span class="line"><span class="cl"><span class="s">  KMSKey:
+</span></span></span><span class="line"><span class="cl"><span class="s">    Type: AWS::KMS::Key
+</span></span></span><span class="line"><span class="cl"><span class="s">    Properties:
+</span></span></span><span class="line"><span class="cl"><span class="s">      Description: !Sub &#34;KMS key for secrets related to ${ClusterFQDN}&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">      EnableKeyRotation: true
+</span></span></span><span class="line"><span class="cl"><span class="s">      PendingWindowInDays: 7
+</span></span></span><span class="line"><span class="cl"><span class="s">      KeyPolicy:
+</span></span></span><span class="line"><span class="cl"><span class="s">        Version: &#34;2012-10-17&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">        Id: !Sub &#34;eks-key-policy-${ClusterName}&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">        Statement:
+</span></span></span><span class="line"><span class="cl"><span class="s">        - Sid: Enable IAM User Permissions
+</span></span></span><span class="line"><span class="cl"><span class="s">          Effect: Allow
+</span></span></span><span class="line"><span class="cl"><span class="s">          Principal:
+</span></span></span><span class="line"><span class="cl"><span class="s">            AWS: !Sub &#34;arn:aws:iam::${AWS::AccountId}:root&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">          Action: kms:*
+</span></span></span><span class="line"><span class="cl"><span class="s">          Resource: &#34;*&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">        - Sid: Allow use of the key
+</span></span></span><span class="line"><span class="cl"><span class="s">          Effect: Allow
+</span></span></span><span class="line"><span class="cl"><span class="s">          Principal:
+</span></span></span><span class="line"><span class="cl"><span class="s">            AWS: !Sub &#34;arn:aws:iam::${AWS::AccountId}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">          Action:
+</span></span></span><span class="line"><span class="cl"><span class="s">          - kms:Encrypt
+</span></span></span><span class="line"><span class="cl"><span class="s">          - kms:Decrypt
+</span></span></span><span class="line"><span class="cl"><span class="s">          - kms:ReEncrypt*
+</span></span></span><span class="line"><span class="cl"><span class="s">          - kms:GenerateDataKey*
+</span></span></span><span class="line"><span class="cl"><span class="s">          - kms:DescribeKey
+</span></span></span><span class="line"><span class="cl"><span class="s">          Resource: &#34;*&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">        - Sid: Allow attachment of persistent resources
+</span></span></span><span class="line"><span class="cl"><span class="s">          Effect: Allow
+</span></span></span><span class="line"><span class="cl"><span class="s">          Principal:
+</span></span></span><span class="line"><span class="cl"><span class="s">            AWS: !Sub &#34;arn:aws:iam::${AWS::AccountId}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">          Action:
+</span></span></span><span class="line"><span class="cl"><span class="s">          - kms:CreateGrant
+</span></span></span><span class="line"><span class="cl"><span class="s">          Resource: &#34;*&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">          Condition:
+</span></span></span><span class="line"><span class="cl"><span class="s">            Bool:
+</span></span></span><span class="line"><span class="cl"><span class="s">              kms:GrantIsForAWSResource: true
+</span></span></span><span class="line"><span class="cl"><span class="s">  EKSViewNodesAndWorkloadsPolicy:
+</span></span></span><span class="line"><span class="cl"><span class="s">    Type: AWS::IAM::ManagedPolicy
+</span></span></span><span class="line"><span class="cl"><span class="s">    Properties:
+</span></span></span><span class="line"><span class="cl"><span class="s">      ManagedPolicyName: !Sub &#34;${ClusterFQDN}-EKSViewNodesAndWorkloads&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">      Description: !Sub &#34;Policy used to view workloads running in an EKS cluster created using CAPA&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">      PolicyDocument:
+</span></span></span><span class="line"><span class="cl"><span class="s">        Version: &#34;2012-10-17&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">        Statement:
+</span></span></span><span class="line"><span class="cl"><span class="s">        - Effect: Allow
+</span></span></span><span class="line"><span class="cl"><span class="s">          Action:
+</span></span></span><span class="line"><span class="cl"><span class="s">          - eks:DescribeNodegroup
+</span></span></span><span class="line"><span class="cl"><span class="s">          - eks:ListNodegroups
+</span></span></span><span class="line"><span class="cl"><span class="s">          - eks:DescribeCluster
+</span></span></span><span class="line"><span class="cl"><span class="s">          - eks:ListClusters
+</span></span></span><span class="line"><span class="cl"><span class="s">          - eks:AccessKubernetesApi
+</span></span></span><span class="line"><span class="cl"><span class="s">          - ssm:GetParameter
+</span></span></span><span class="line"><span class="cl"><span class="s">          - eks:ListUpdates
+</span></span></span><span class="line"><span class="cl"><span class="s">          - eks:ListFargateProfiles
+</span></span></span><span class="line"><span class="cl"><span class="s">          Resource: &#34;*&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">  RecordSet:
+</span></span></span><span class="line"><span class="cl"><span class="s">    Type: AWS::Route53::RecordSet
+</span></span></span><span class="line"><span class="cl"><span class="s">    Properties:
+</span></span></span><span class="line"><span class="cl"><span class="s">      HostedZoneName: !Sub &#34;${BaseDomain}.&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">      Name: !Ref ClusterFQDN
+</span></span></span><span class="line"><span class="cl"><span class="s">      Type: NS
+</span></span></span><span class="line"><span class="cl"><span class="s">      TTL: 60
+</span></span></span><span class="line"><span class="cl"><span class="s">      ResourceRecords: !GetAtt HostedZone.NameServers
+</span></span></span><span class="line"><span class="cl"><span class="s">  S3Policy:
+</span></span></span><span class="line"><span class="cl"><span class="s">    Type: AWS::IAM::ManagedPolicy
+</span></span></span><span class="line"><span class="cl"><span class="s">    Properties:
+</span></span></span><span class="line"><span class="cl"><span class="s">      ManagedPolicyName: !Sub &#34;${ClusterFQDN}-AmazonS3&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">      Description: !Sub &#34;Policy required by Harbor and Velero to write to S3 bucket ${ClusterFQDN}&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">      PolicyDocument:
+</span></span></span><span class="line"><span class="cl"><span class="s">        Version: &#34;2012-10-17&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">        Statement:
+</span></span></span><span class="line"><span class="cl"><span class="s">        - Effect: Allow
+</span></span></span><span class="line"><span class="cl"><span class="s">          Action:
+</span></span></span><span class="line"><span class="cl"><span class="s">          - s3:ListBucket
+</span></span></span><span class="line"><span class="cl"><span class="s">          - s3:GetBucketLocation
+</span></span></span><span class="line"><span class="cl"><span class="s">          - s3:ListBucketMultipartUploads
+</span></span></span><span class="line"><span class="cl"><span class="s">          Resource: !GetAtt S3Bucket.Arn
+</span></span></span><span class="line"><span class="cl"><span class="s">        - Effect: Allow
+</span></span></span><span class="line"><span class="cl"><span class="s">          Action:
+</span></span></span><span class="line"><span class="cl"><span class="s">          - s3:PutObject
+</span></span></span><span class="line"><span class="cl"><span class="s">          - s3:GetObject
+</span></span></span><span class="line"><span class="cl"><span class="s">          - s3:DeleteObject
+</span></span></span><span class="line"><span class="cl"><span class="s">          - s3:ListMultipartUploadParts
+</span></span></span><span class="line"><span class="cl"><span class="s">          - s3:AbortMultipartUpload
+</span></span></span><span class="line"><span class="cl"><span class="s">          Resource: !Sub &#34;arn:aws:s3:::${ClusterFQDN}/*&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">  S3Bucket:
+</span></span></span><span class="line"><span class="cl"><span class="s">    Type: AWS::S3::Bucket
+</span></span></span><span class="line"><span class="cl"><span class="s">    Properties:
+</span></span></span><span class="line"><span class="cl"><span class="s">      AccessControl: Private
+</span></span></span><span class="line"><span class="cl"><span class="s">      BucketName: !Sub &#34;${ClusterFQDN}&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">      BucketEncryption:
+</span></span></span><span class="line"><span class="cl"><span class="s">        ServerSideEncryptionConfiguration:
+</span></span></span><span class="line"><span class="cl"><span class="s">          - ServerSideEncryptionByDefault:
+</span></span></span><span class="line"><span class="cl"><span class="s">              SSEAlgorithm: AES256
+</span></span></span><span class="line"><span class="cl"><span class="s">  SecretsManagerMySecret:
+</span></span></span><span class="line"><span class="cl"><span class="s">    Type: AWS::SecretsManager::Secret
+</span></span></span><span class="line"><span class="cl"><span class="s">    Properties:
+</span></span></span><span class="line"><span class="cl"><span class="s">      Name: !Sub &#34;${ClusterFQDN}-MySecret&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">      Description: My Secret
+</span></span></span><span class="line"><span class="cl"><span class="s">      GenerateSecretString:
+</span></span></span><span class="line"><span class="cl"><span class="s">        SecretStringTemplate: &#34;{\&#34;username\&#34;: \&#34;Administrator\&#34;}&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">        GenerateStringKey: password
+</span></span></span><span class="line"><span class="cl"><span class="s">        PasswordLength: 32
+</span></span></span><span class="line"><span class="cl"><span class="s">      KmsKeyId: !Ref KMSKey
+</span></span></span><span class="line"><span class="cl"><span class="s">  SecretsManagerMySecret2:
+</span></span></span><span class="line"><span class="cl"><span class="s">    Type: AWS::SecretsManager::Secret
+</span></span></span><span class="line"><span class="cl"><span class="s">    Properties:
+</span></span></span><span class="line"><span class="cl"><span class="s">      Name: !Sub &#34;${ClusterFQDN}-MySecret2&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">      Description: My Secret2
+</span></span></span><span class="line"><span class="cl"><span class="s">      GenerateSecretString:
+</span></span></span><span class="line"><span class="cl"><span class="s">        SecretStringTemplate: &#34;{\&#34;username\&#34;: \&#34;Administrator2\&#34;}&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">        GenerateStringKey: password
+</span></span></span><span class="line"><span class="cl"><span class="s">        PasswordLength: 32
+</span></span></span><span class="line"><span class="cl"><span class="s">      KmsKeyId: !Ref KMSKey
+</span></span></span><span class="line"><span class="cl"><span class="s">  UserMyUser1:
+</span></span></span><span class="line"><span class="cl"><span class="s">    Type: AWS::IAM::User
+</span></span></span><span class="line"><span class="cl"><span class="s">    Properties:
+</span></span></span><span class="line"><span class="cl"><span class="s">      UserName: !Sub &#34;myuser1-${ClusterName}&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">      Policies:
+</span></span></span><span class="line"><span class="cl"><span class="s">      - PolicyName: !Sub &#34;myuser1-${ClusterName}-policy&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">        PolicyDocument:
+</span></span></span><span class="line"><span class="cl"><span class="s">          Version: &#34;2012-10-17&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">          Statement:
+</span></span></span><span class="line"><span class="cl"><span class="s">          - Sid: AllowAssumeOrganizationAccountRole
+</span></span></span><span class="line"><span class="cl"><span class="s">            Effect: Allow
+</span></span></span><span class="line"><span class="cl"><span class="s">            Action: sts:AssumeRole
+</span></span></span><span class="line"><span class="cl"><span class="s">            Resource: !GetAtt RoleMyUser1.Arn
+</span></span></span><span class="line"><span class="cl"><span class="s">  AccessKeyMyUser1:
+</span></span></span><span class="line"><span class="cl"><span class="s">    Type: AWS::IAM::AccessKey
+</span></span></span><span class="line"><span class="cl"><span class="s">    Properties:
+</span></span></span><span class="line"><span class="cl"><span class="s">      UserName: !Ref UserMyUser1
+</span></span></span><span class="line"><span class="cl"><span class="s">  RoleMyUser1:
+</span></span></span><span class="line"><span class="cl"><span class="s">    Type: AWS::IAM::Role
+</span></span></span><span class="line"><span class="cl"><span class="s">    Properties:
+</span></span></span><span class="line"><span class="cl"><span class="s">      Description: !Sub &#34;IAM role for the myuser1-${ClusterName} user&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">      RoleName: !Sub &#34;myuser1-${ClusterName}&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">      AssumeRolePolicyDocument:
+</span></span></span><span class="line"><span class="cl"><span class="s">        Version: 2012-10-17
+</span></span></span><span class="line"><span class="cl"><span class="s">        Statement:
+</span></span></span><span class="line"><span class="cl"><span class="s">        - Effect: Allow
+</span></span></span><span class="line"><span class="cl"><span class="s">          Principal:
+</span></span></span><span class="line"><span class="cl"><span class="s">            AWS: !Sub &#34;arn:aws:iam::${AWS::AccountId}:root&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">          Action: sts:AssumeRole
+</span></span></span><span class="line"><span class="cl"><span class="s">  UserMyUser2:
+</span></span></span><span class="line"><span class="cl"><span class="s">    Type: AWS::IAM::User
+</span></span></span><span class="line"><span class="cl"><span class="s">    Properties:
+</span></span></span><span class="line"><span class="cl"><span class="s">      UserName: !Sub &#34;myuser2-${ClusterName}&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">      Policies:
+</span></span></span><span class="line"><span class="cl"><span class="s">      - PolicyName: !Sub &#34;myuser2-${ClusterName}-policy&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">        PolicyDocument:
+</span></span></span><span class="line"><span class="cl"><span class="s">          Version: &#34;2012-10-17&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">          Statement:
+</span></span></span><span class="line"><span class="cl"><span class="s">          - Sid: AllowAssumeOrganizationAccountRole
+</span></span></span><span class="line"><span class="cl"><span class="s">            Effect: Allow
+</span></span></span><span class="line"><span class="cl"><span class="s">            Action: sts:AssumeRole
+</span></span></span><span class="line"><span class="cl"><span class="s">            Resource: !GetAtt RoleMyUser2.Arn
+</span></span></span><span class="line"><span class="cl"><span class="s">  AccessKeyMyUser2:
+</span></span></span><span class="line"><span class="cl"><span class="s">    Type: AWS::IAM::AccessKey
+</span></span></span><span class="line"><span class="cl"><span class="s">    Properties:
+</span></span></span><span class="line"><span class="cl"><span class="s">      UserName: !Ref UserMyUser2
+</span></span></span><span class="line"><span class="cl"><span class="s">  RoleMyUser2:
+</span></span></span><span class="line"><span class="cl"><span class="s">    Type: AWS::IAM::Role
+</span></span></span><span class="line"><span class="cl"><span class="s">    Properties:
+</span></span></span><span class="line"><span class="cl"><span class="s">      Description: !Sub &#34;IAM role for the myuser2-${ClusterName} user&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">      RoleName: !Sub &#34;myuser2-${ClusterName}&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">      AssumeRolePolicyDocument:
+</span></span></span><span class="line"><span class="cl"><span class="s">        Version: 2012-10-17
+</span></span></span><span class="line"><span class="cl"><span class="s">        Statement:
+</span></span></span><span class="line"><span class="cl"><span class="s">        - Effect: Allow
+</span></span></span><span class="line"><span class="cl"><span class="s">          Principal:
+</span></span></span><span class="line"><span class="cl"><span class="s">            AWS: !Sub &#34;arn:aws:iam::${AWS::AccountId}:root&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">          Action: sts:AssumeRole
+</span></span></span><span class="line"><span class="cl"><span class="s">Outputs:
+</span></span></span><span class="line"><span class="cl"><span class="s">  CloudWatchPolicyArn:
+</span></span></span><span class="line"><span class="cl"><span class="s">    Description: The ARN of the created CloudWatchPolicy
+</span></span></span><span class="line"><span class="cl"><span class="s">    Value: !Ref CloudWatchPolicy
+</span></span></span><span class="line"><span class="cl"><span class="s">    Export:
+</span></span></span><span class="line"><span class="cl"><span class="s">      Name:
+</span></span></span><span class="line"><span class="cl"><span class="s">        Fn::Sub: &#34;${AWS::StackName}-CloudWatchPolicyArn&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">  KMSKeyArn:
+</span></span></span><span class="line"><span class="cl"><span class="s">    Description: The ARN of the created KMS Key to encrypt EKS related services
+</span></span></span><span class="line"><span class="cl"><span class="s">    Value: !GetAtt KMSKey.Arn
+</span></span></span><span class="line"><span class="cl"><span class="s">    Export:
+</span></span></span><span class="line"><span class="cl"><span class="s">      Name:
+</span></span></span><span class="line"><span class="cl"><span class="s">        Fn::Sub: &#34;${AWS::StackName}-KMSKeyArn&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">  KMSKeyId:
+</span></span></span><span class="line"><span class="cl"><span class="s">    Description: The ID of the created KMS Key to encrypt EKS related services
+</span></span></span><span class="line"><span class="cl"><span class="s">    Value: !Ref KMSKey
+</span></span></span><span class="line"><span class="cl"><span class="s">    Export:
+</span></span></span><span class="line"><span class="cl"><span class="s">      Name:
+</span></span></span><span class="line"><span class="cl"><span class="s">        Fn::Sub: &#34;${AWS::StackName}-KMSKeyId&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">  HostedZoneArn:
+</span></span></span><span class="line"><span class="cl"><span class="s">    Description: The ARN of the created Route53 Zone for K8s cluster
+</span></span></span><span class="line"><span class="cl"><span class="s">    Value: !Ref HostedZone
+</span></span></span><span class="line"><span class="cl"><span class="s">    Export:
+</span></span></span><span class="line"><span class="cl"><span class="s">      Name:
+</span></span></span><span class="line"><span class="cl"><span class="s">        Fn::Sub: &#34;${AWS::StackName}-HostedZoneArn&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">  S3PolicyArn:
+</span></span></span><span class="line"><span class="cl"><span class="s">    Description: The ARN of the created AmazonS3 policy
+</span></span></span><span class="line"><span class="cl"><span class="s">    Value: !Ref S3Policy
+</span></span></span><span class="line"><span class="cl"><span class="s">    Export:
+</span></span></span><span class="line"><span class="cl"><span class="s">      Name:
+</span></span></span><span class="line"><span class="cl"><span class="s">        Fn::Sub: &#34;${AWS::StackName}-S3PolicyArn&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">  RoleMyUser1Arn:
+</span></span></span><span class="line"><span class="cl"><span class="s">    Description: The ARN of the MyUser1 IAM Role
+</span></span></span><span class="line"><span class="cl"><span class="s">    Value: !GetAtt RoleMyUser1.Arn
+</span></span></span><span class="line"><span class="cl"><span class="s">    Export:
+</span></span></span><span class="line"><span class="cl"><span class="s">      Name:
+</span></span></span><span class="line"><span class="cl"><span class="s">        Fn::Sub: &#34;${AWS::StackName}-RoleMyUser1Arn&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">  AccessKeyMyUser1:
+</span></span></span><span class="line"><span class="cl"><span class="s">    Description: The AccessKey for MyUser1 user
+</span></span></span><span class="line"><span class="cl"><span class="s">    Value: !Ref AccessKeyMyUser1
+</span></span></span><span class="line"><span class="cl"><span class="s">    Export:
+</span></span></span><span class="line"><span class="cl"><span class="s">      Name:
+</span></span></span><span class="line"><span class="cl"><span class="s">        Fn::Sub: &#34;${AWS::StackName}-AccessKeyMyUser1&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">  SecretAccessKeyMyUser1:
+</span></span></span><span class="line"><span class="cl"><span class="s">    Description: The SecretAccessKey for MyUser1 user
+</span></span></span><span class="line"><span class="cl"><span class="s">    Value: !GetAtt AccessKeyMyUser1.SecretAccessKey
+</span></span></span><span class="line"><span class="cl"><span class="s">    Export:
+</span></span></span><span class="line"><span class="cl"><span class="s">      Name:
+</span></span></span><span class="line"><span class="cl"><span class="s">        Fn::Sub: &#34;${AWS::StackName}-SecretAccessKeyMyUser1&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">  RoleMyUser2Arn:
+</span></span></span><span class="line"><span class="cl"><span class="s">    Description: The ARN of the MyUser2 IAM Role
+</span></span></span><span class="line"><span class="cl"><span class="s">    Value: !GetAtt RoleMyUser2.Arn
+</span></span></span><span class="line"><span class="cl"><span class="s">    Export:
+</span></span></span><span class="line"><span class="cl"><span class="s">      Name:
+</span></span></span><span class="line"><span class="cl"><span class="s">        Fn::Sub: &#34;${AWS::StackName}-RoleMyUser2Arn&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">  AccessKeyMyUser2:
+</span></span></span><span class="line"><span class="cl"><span class="s">    Description: The AccessKey for MyUser2 user
+</span></span></span><span class="line"><span class="cl"><span class="s">    Value: !Ref AccessKeyMyUser2
+</span></span></span><span class="line"><span class="cl"><span class="s">    Export:
+</span></span></span><span class="line"><span class="cl"><span class="s">      Name:
+</span></span></span><span class="line"><span class="cl"><span class="s">        Fn::Sub: &#34;${AWS::StackName}-AccessKeyMyUser2&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">  SecretAccessKeyMyUser2:
+</span></span></span><span class="line"><span class="cl"><span class="s">    Description: The SecretAccessKey for MyUser2 user
+</span></span></span><span class="line"><span class="cl"><span class="s">    Value: !GetAtt AccessKeyMyUser2.SecretAccessKey
+</span></span></span><span class="line"><span class="cl"><span class="s">    Export:
+</span></span></span><span class="line"><span class="cl"><span class="s">      Name:
+</span></span></span><span class="line"><span class="cl"><span class="s">        Fn::Sub: &#34;${AWS::StackName}-SecretAccessKeyMyUser2&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">eval</span> aws cloudformation deploy --capabilities CAPABILITY_NAMED_IAM <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --parameter-overrides <span class="s2">&#34;ClusterFQDN=</span><span class="si">${</span><span class="nv">CLUSTER_FQDN</span><span class="si">}</span><span class="s2"> ClusterName=</span><span class="si">${</span><span class="nv">CLUSTER_NAME</span><span class="si">}</span><span class="s2"> BaseDomain=</span><span class="si">${</span><span class="nv">BASE_DOMAIN</span><span class="si">}</span><span class="s2">&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --stack-name <span class="s2">&#34;</span><span class="si">${</span><span class="nv">CLUSTER_NAME</span><span class="si">}</span><span class="s2">-route53-iam-s3-kms-asm&#34;</span> --template-file <span class="s2">&#34;tmp/</span><span class="si">${</span><span class="nv">CLUSTER_FQDN</span><span class="si">}</span><span class="s2">/aws-route53-iam-s3-kms-asm.yml&#34;</span> --tags <span class="s2">&#34;</span><span class="si">${</span><span class="nv">TAGS</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">AWS_CLOUDFORMATION_DETAILS</span><span class="o">=</span><span class="k">$(</span>aws cloudformation describe-stacks --stack-name <span class="s2">&#34;</span><span class="si">${</span><span class="nv">CLUSTER_NAME</span><span class="si">}</span><span class="s2">-route53-iam-s3-kms-asm&#34;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># CLOUDWATCH_POLICY_ARN=$(echo &#34;${AWS_CLOUDFORMATION_DETAILS}&#34; | jq -r &#34;.Stacks[0].Outputs[] | select(.OutputKey==\&#34;CloudWatchPolicyArn\&#34;) .OutputValue&#34;)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">KMS_KEY_ARN</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">AWS_CLOUDFORMATION_DETAILS</span><span class="si">}</span><span class="s2">&#34;</span> <span class="p">|</span> jq -r <span class="s2">&#34;.Stacks[0].Outputs[] | select(.OutputKey==\&#34;KMSKeyArn\&#34;) .OutputValue&#34;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">KMS_KEY_ID</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">AWS_CLOUDFORMATION_DETAILS</span><span class="si">}</span><span class="s2">&#34;</span> <span class="p">|</span> jq -r <span class="s2">&#34;.Stacks[0].Outputs[] | select(.OutputKey==\&#34;KMSKeyId\&#34;) .OutputValue&#34;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">S3_POLICY_ARN</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">AWS_CLOUDFORMATION_DETAILS</span><span class="si">}</span><span class="s2">&#34;</span> <span class="p">|</span> jq -r <span class="s2">&#34;.Stacks[0].Outputs[] | select(.OutputKey==\&#34;S3PolicyArn\&#34;) .OutputValue&#34;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># MYUSER1_ROLE_ARN=$(echo &#34;${AWS_CLOUDFORMATION_DETAILS}&#34; | jq -r &#34;.Stacks[0].Outputs[] | select(.OutputKey==\&#34;RoleMyUser1Arn\&#34;) .OutputValue&#34;)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># MYUSER1_USER_ACCESSKEYMYUSER=$(echo &#34;${AWS_CLOUDFORMATION_DETAILS}&#34; | jq -r &#34;.Stacks[0].Outputs[] | select(.OutputKey==\&#34;AccessKeyMyUser1\&#34;) .OutputValue&#34;)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># MYUSER1_USER_SECRETACCESSKEY=$(echo &#34;${AWS_CLOUDFORMATION_DETAILS}&#34; | jq -r &#34;.Stacks[0].Outputs[] | select(.OutputKey==\&#34;SecretAccessKeyMyUser1\&#34;) .OutputValue&#34;)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># MYUSER2_ROLE_ARN=$(echo &#34;${AWS_CLOUDFORMATION_DETAILS}&#34; | jq -r &#34;.Stacks[0].Outputs[] | select(.OutputKey==\&#34;RoleMyUser2Arn\&#34;) .OutputValue&#34;)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># MYUSER2_USER_ACCESSKEYMYUSER=$(echo &#34;${AWS_CLOUDFORMATION_DETAILS}&#34; | jq -r &#34;.Stacks[0].Outputs[] | select(.OutputKey==\&#34;AccessKeyMyUser2\&#34;) .OutputValue&#34;)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># MYUSER2_USER_SECRETACCESSKEY=$(echo &#34;${AWS_CLOUDFORMATION_DETAILS}&#34; | jq -r &#34;.Stacks[0].Outputs[] | select(.OutputKey==\&#34;SecretAccessKeyMyUser2\&#34;) .OutputValue&#34;)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Change TTL=60 of SOA + NS records for new domain
+(it can not be done in CloudFormation):</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nv">HOSTED_ZONE_ID</span><span class="o">=</span><span class="k">$(</span>aws route53 list-hosted-zones --query <span class="s2">&#34;HostedZones[?Name==\`</span><span class="si">${</span><span class="nv">CLUSTER_FQDN</span><span class="si">}</span><span class="s2">.\`].Id&#34;</span> --output text<span class="k">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">RESOURCE_RECORD_SET_SOA</span><span class="o">=</span><span class="k">$(</span>aws route53 --output json list-resource-record-sets --hosted-zone-id <span class="s2">&#34;</span><span class="si">${</span><span class="nv">HOSTED_ZONE_ID</span><span class="si">}</span><span class="s2">&#34;</span> --query <span class="s2">&#34;(ResourceRecordSets[?Type == \`SOA\`])[0]&#34;</span> <span class="p">|</span> sed <span class="s2">&#34;s/\&#34;TTL\&#34;:.*/\&#34;TTL\&#34;: 60,/&#34;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">RESOURCE_RECORD_SET_NS</span><span class="o">=</span><span class="k">$(</span>aws route53 --output json list-resource-record-sets --hosted-zone-id <span class="s2">&#34;</span><span class="si">${</span><span class="nv">HOSTED_ZONE_ID</span><span class="si">}</span><span class="s2">&#34;</span> --query <span class="s2">&#34;(ResourceRecordSets[?Type == \`NS\`])[0]&#34;</span> <span class="p">|</span> sed <span class="s2">&#34;s/\&#34;TTL\&#34;:.*/\&#34;TTL\&#34;: 60,/&#34;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl">cat <span class="s">&lt;&lt; EOF | aws route53 --output json change-resource-record-sets --hosted-zone-id &#34;${HOSTED_ZONE_ID}&#34; --change-batch=file:///dev/stdin
+</span></span></span><span class="line"><span class="cl"><span class="s">{
+</span></span></span><span class="line"><span class="cl"><span class="s">    &#34;Comment&#34;: &#34;Update record to reflect new TTL for SOA and NS records&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s">    &#34;Changes&#34;: [
+</span></span></span><span class="line"><span class="cl"><span class="s">        {
+</span></span></span><span class="line"><span class="cl"><span class="s">            &#34;Action&#34;: &#34;UPSERT&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s">            &#34;ResourceRecordSet&#34;:
+</span></span></span><span class="line"><span class="cl"><span class="s">${RESOURCE_RECORD_SET_SOA}
+</span></span></span><span class="line"><span class="cl"><span class="s">        },
+</span></span></span><span class="line"><span class="cl"><span class="s">        {
+</span></span></span><span class="line"><span class="cl"><span class="s">            &#34;Action&#34;: &#34;UPSERT&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s">            &#34;ResourceRecordSet&#34;:
+</span></span></span><span class="line"><span class="cl"><span class="s">${RESOURCE_RECORD_SET_NS}
+</span></span></span><span class="line"><span class="cl"><span class="s">        }
+</span></span></span><span class="line"><span class="cl"><span class="s">    ]
+</span></span></span><span class="line"><span class="cl"><span class="s">}
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="create-amazon-eks">Create Amazon EKS</h2>
+<p><figure><a class="lightgallery" href="https://raw.githubusercontent.com/aws-samples/eks-workshop/65b766c494a5b4f5420b2912d8373c4957163541/static/images/3-service-animated.gif" title="EKS" data-thumbnail="https://raw.githubusercontent.com/aws-samples/eks-workshop/65b766c494a5b4f5420b2912d8373c4957163541/static/images/3-service-animated.gif" data-sub-html="<h2>EKS</h2><p>EKS</p>">
+        <img
+            class="lazyload"
+            src="/hugo-loveit/svg/loading.min.svg"
+            data-src="https://raw.githubusercontent.com/aws-samples/eks-workshop/65b766c494a5b4f5420b2912d8373c4957163541/static/images/3-service-animated.gif"
+            data-srcset="https://raw.githubusercontent.com/aws-samples/eks-workshop/65b766c494a5b4f5420b2912d8373c4957163541/static/images/3-service-animated.gif, https://raw.githubusercontent.com/aws-samples/eks-workshop/65b766c494a5b4f5420b2912d8373c4957163541/static/images/3-service-animated.gif 1.5x, https://raw.githubusercontent.com/aws-samples/eks-workshop/65b766c494a5b4f5420b2912d8373c4957163541/static/images/3-service-animated.gif 2x"
+            data-sizes="auto"
+            alt="https://raw.githubusercontent.com/aws-samples/eks-workshop/65b766c494a5b4f5420b2912d8373c4957163541/static/images/3-service-animated.gif" />
+    </a><figcaption class="image-caption">EKS</figcaption>
+    </figure></p>
+<p>Create <a href="https://aws.amazon.com/eks/" target="_blank" rel="noopener noreffer ">Amazon EKS</a> in AWS by using <a href="https://eksctl.io/" target="_blank" rel="noopener noreffer ">eksctl</a>.
+It&rsquo;s a tool from Weaveworks based on official
+AWS CloudFormation templates which will be used to launch and configure our
+EKS cluster and nodes.</p>
+<p><figure><a class="lightgallery" href="https://raw.githubusercontent.com/weaveworks/eksctl/c365149fc1a0b8d357139cbd6cda5aee8841c16c/logo/eksctl.png" title="eksctl" data-thumbnail="https://raw.githubusercontent.com/weaveworks/eksctl/c365149fc1a0b8d357139cbd6cda5aee8841c16c/logo/eksctl.png" data-sub-html="<h2>eksctl</h2><p>eksctl</p>">
+        <img
+            class="lazyload"
+            src="/hugo-loveit/svg/loading.min.svg"
+            data-src="https://raw.githubusercontent.com/weaveworks/eksctl/c365149fc1a0b8d357139cbd6cda5aee8841c16c/logo/eksctl.png"
+            data-srcset="https://raw.githubusercontent.com/weaveworks/eksctl/c365149fc1a0b8d357139cbd6cda5aee8841c16c/logo/eksctl.png, https://raw.githubusercontent.com/weaveworks/eksctl/c365149fc1a0b8d357139cbd6cda5aee8841c16c/logo/eksctl.png 1.5x, https://raw.githubusercontent.com/weaveworks/eksctl/c365149fc1a0b8d357139cbd6cda5aee8841c16c/logo/eksctl.png 2x"
+            data-sizes="auto"
+            alt="https://raw.githubusercontent.com/weaveworks/eksctl/c365149fc1a0b8d357139cbd6cda5aee8841c16c/logo/eksctl.png" />
+    </a><figcaption class="image-caption">eksctl</figcaption>
+    </figure></p>
+<p>Generate SSH key if not exists:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">test</span> -f ~/.ssh/id_rsa.pub <span class="o">||</span> <span class="o">(</span>install -m <span class="m">0700</span> -d ~/.ssh <span class="o">&amp;&amp;</span> ssh-keygen -b <span class="m">2048</span> -t rsa -f ~/.ssh/id_rsa -q -N <span class="s2">&#34;&#34;</span><span class="o">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Create the Amazon EKS cluster with Calico using <code>eksctl</code>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span><span class="lnt">147
+</span><span class="lnt">148
+</span><span class="lnt">149
+</span><span class="lnt">150
+</span><span class="lnt">151
+</span><span class="lnt">152
+</span><span class="lnt">153
+</span><span class="lnt">154
+</span><span class="lnt">155
+</span><span class="lnt">156
+</span><span class="lnt">157
+</span><span class="lnt">158
+</span><span class="lnt">159
+</span><span class="lnt">160
+</span><span class="lnt">161
+</span><span class="lnt">162
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">cat &gt; <span class="s2">&#34;tmp/</span><span class="si">${</span><span class="nv">CLUSTER_FQDN</span><span class="si">}</span><span class="s2">/eksctl.yaml&#34;</span> <span class="s">&lt;&lt; EOF
+</span></span></span><span class="line"><span class="cl"><span class="s">apiVersion: eksctl.io/v1alpha5
+</span></span></span><span class="line"><span class="cl"><span class="s">kind: ClusterConfig
+</span></span></span><span class="line"><span class="cl"><span class="s">metadata:
+</span></span></span><span class="line"><span class="cl"><span class="s">  name: ${CLUSTER_NAME}
+</span></span></span><span class="line"><span class="cl"><span class="s">  region: ${AWS_DEFAULT_REGION}
+</span></span></span><span class="line"><span class="cl"><span class="s">  version: &#34;1.21&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">  tags: &amp;tags
+</span></span></span><span class="line"><span class="cl"><span class="s">$(echo &#34;${TAGS}&#34; | sed &#34;s/ /\\n    /g; s/^/    /g; s/=/: /g&#34;)
+</span></span></span><span class="line"><span class="cl"><span class="s">availabilityZones:
+</span></span></span><span class="line"><span class="cl"><span class="s">  - ${AWS_DEFAULT_REGION}a
+</span></span></span><span class="line"><span class="cl"><span class="s">  - ${AWS_DEFAULT_REGION}b
+</span></span></span><span class="line"><span class="cl"><span class="s">iam:
+</span></span></span><span class="line"><span class="cl"><span class="s">  withOIDC: true
+</span></span></span><span class="line"><span class="cl"><span class="s">  serviceAccounts:
+</span></span></span><span class="line"><span class="cl"><span class="s">    - metadata:
+</span></span></span><span class="line"><span class="cl"><span class="s">        name: aws-load-balancer-controller
+</span></span></span><span class="line"><span class="cl"><span class="s">        namespace: kube-system
+</span></span></span><span class="line"><span class="cl"><span class="s">      wellKnownPolicies:
+</span></span></span><span class="line"><span class="cl"><span class="s">        awsLoadBalancerController: true
+</span></span></span><span class="line"><span class="cl"><span class="s">    - metadata:
+</span></span></span><span class="line"><span class="cl"><span class="s">        name: cert-manager
+</span></span></span><span class="line"><span class="cl"><span class="s">        namespace: cert-manager
+</span></span></span><span class="line"><span class="cl"><span class="s">      wellKnownPolicies:
+</span></span></span><span class="line"><span class="cl"><span class="s">        certManager: true
+</span></span></span><span class="line"><span class="cl"><span class="s">    - metadata:
+</span></span></span><span class="line"><span class="cl"><span class="s">        name: cluster-autoscaler
+</span></span></span><span class="line"><span class="cl"><span class="s">        namespace: kube-system
+</span></span></span><span class="line"><span class="cl"><span class="s">      wellKnownPolicies:
+</span></span></span><span class="line"><span class="cl"><span class="s">        autoScaler: true
+</span></span></span><span class="line"><span class="cl"><span class="s">    - metadata:
+</span></span></span><span class="line"><span class="cl"><span class="s">        name: external-dns
+</span></span></span><span class="line"><span class="cl"><span class="s">        namespace: external-dns
+</span></span></span><span class="line"><span class="cl"><span class="s">      wellKnownPolicies:
+</span></span></span><span class="line"><span class="cl"><span class="s">        externalDNS: true
+</span></span></span><span class="line"><span class="cl"><span class="s">    - metadata:
+</span></span></span><span class="line"><span class="cl"><span class="s">        name: ebs-csi-controller-sa
+</span></span></span><span class="line"><span class="cl"><span class="s">        namespace: kube-system
+</span></span></span><span class="line"><span class="cl"><span class="s">      wellKnownPolicies:
+</span></span></span><span class="line"><span class="cl"><span class="s">        ebsCSIController: true
+</span></span></span><span class="line"><span class="cl"><span class="s">    - metadata:
+</span></span></span><span class="line"><span class="cl"><span class="s">        name: harbor
+</span></span></span><span class="line"><span class="cl"><span class="s">        namespace: harbor
+</span></span></span><span class="line"><span class="cl"><span class="s">      attachPolicyARNs:
+</span></span></span><span class="line"><span class="cl"><span class="s">        - ${S3_POLICY_ARN}
+</span></span></span><span class="line"><span class="cl"><span class="s">    - metadata:
+</span></span></span><span class="line"><span class="cl"><span class="s">        name: velero
+</span></span></span><span class="line"><span class="cl"><span class="s">        namespace: velero
+</span></span></span><span class="line"><span class="cl"><span class="s">      attachPolicyARNs:
+</span></span></span><span class="line"><span class="cl"><span class="s">        - ${S3_POLICY_ARN}
+</span></span></span><span class="line"><span class="cl"><span class="s">    - metadata:
+</span></span></span><span class="line"><span class="cl"><span class="s">        name: s3-test
+</span></span></span><span class="line"><span class="cl"><span class="s">        namespace: s3-test
+</span></span></span><span class="line"><span class="cl"><span class="s">      attachPolicyARNs:
+</span></span></span><span class="line"><span class="cl"><span class="s">        - ${S3_POLICY_ARN}
+</span></span></span><span class="line"><span class="cl"><span class="s">    - metadata:
+</span></span></span><span class="line"><span class="cl"><span class="s">        name: grafana
+</span></span></span><span class="line"><span class="cl"><span class="s">        namespace: kube-prometheus-stack
+</span></span></span><span class="line"><span class="cl"><span class="s">      attachPolicyARNs:
+</span></span></span><span class="line"><span class="cl"><span class="s">        - arn:aws:iam::aws:policy/AmazonPrometheusQueryAccess
+</span></span></span><span class="line"><span class="cl"><span class="s">        - arn:aws:iam::aws:policy/CloudWatchReadOnlyAccess
+</span></span></span><span class="line"><span class="cl"><span class="s">      attachPolicy:
+</span></span></span><span class="line"><span class="cl"><span class="s">        Version: 2012-10-17
+</span></span></span><span class="line"><span class="cl"><span class="s">        Statement:
+</span></span></span><span class="line"><span class="cl"><span class="s">        - Sid: AllowReadingTagsInstancesRegionsFromEC2
+</span></span></span><span class="line"><span class="cl"><span class="s">          Effect: Allow
+</span></span></span><span class="line"><span class="cl"><span class="s">          Action:
+</span></span></span><span class="line"><span class="cl"><span class="s">          - ec2:DescribeTags
+</span></span></span><span class="line"><span class="cl"><span class="s">          - ec2:DescribeInstances
+</span></span></span><span class="line"><span class="cl"><span class="s">          - ec2:DescribeRegions
+</span></span></span><span class="line"><span class="cl"><span class="s">          Resource: &#34;*&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">        - Sid: AllowReadingResourcesForTags
+</span></span></span><span class="line"><span class="cl"><span class="s">          Effect: Allow
+</span></span></span><span class="line"><span class="cl"><span class="s">          Action: tag:GetResources
+</span></span></span><span class="line"><span class="cl"><span class="s">          Resource: &#34;*&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">    - metadata:
+</span></span></span><span class="line"><span class="cl"><span class="s">        name: kube-prometheus-stack-prometheus
+</span></span></span><span class="line"><span class="cl"><span class="s">        namespace: kube-prometheus-stack
+</span></span></span><span class="line"><span class="cl"><span class="s">      attachPolicyARNs:
+</span></span></span><span class="line"><span class="cl"><span class="s">        - arn:aws:iam::aws:policy/AmazonPrometheusQueryAccess
+</span></span></span><span class="line"><span class="cl"><span class="s">        - arn:aws:iam::aws:policy/AmazonPrometheusRemoteWriteAccess
+</span></span></span><span class="line"><span class="cl"><span class="s">    - metadata:
+</span></span></span><span class="line"><span class="cl"><span class="s">        name: efs-csi-controller-sa
+</span></span></span><span class="line"><span class="cl"><span class="s">        namespace: kube-system
+</span></span></span><span class="line"><span class="cl"><span class="s">      wellKnownPolicies:
+</span></span></span><span class="line"><span class="cl"><span class="s">        efsCSIController: true
+</span></span></span><span class="line"><span class="cl"><span class="s">    - metadata:
+</span></span></span><span class="line"><span class="cl"><span class="s">        name: vault
+</span></span></span><span class="line"><span class="cl"><span class="s">        namespace: vault
+</span></span></span><span class="line"><span class="cl"><span class="s">      attachPolicy:
+</span></span></span><span class="line"><span class="cl"><span class="s">        Version: 2012-10-17
+</span></span></span><span class="line"><span class="cl"><span class="s">        Statement:
+</span></span></span><span class="line"><span class="cl"><span class="s">        - Sid: VaultKMSUnseal
+</span></span></span><span class="line"><span class="cl"><span class="s">          Effect: Allow
+</span></span></span><span class="line"><span class="cl"><span class="s">          Action:
+</span></span></span><span class="line"><span class="cl"><span class="s">          - kms:Encrypt
+</span></span></span><span class="line"><span class="cl"><span class="s">          - kms:Decrypt
+</span></span></span><span class="line"><span class="cl"><span class="s">          - kms:DescribeKey
+</span></span></span><span class="line"><span class="cl"><span class="s">          Resource:
+</span></span></span><span class="line"><span class="cl"><span class="s">          - &#34;${KMS_KEY_ARN}&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">    - metadata:
+</span></span></span><span class="line"><span class="cl"><span class="s">        name: kuard
+</span></span></span><span class="line"><span class="cl"><span class="s">        namespace: kuard
+</span></span></span><span class="line"><span class="cl"><span class="s">      attachPolicy:
+</span></span></span><span class="line"><span class="cl"><span class="s">        Version: 2012-10-17
+</span></span></span><span class="line"><span class="cl"><span class="s">        Statement:
+</span></span></span><span class="line"><span class="cl"><span class="s">        - Sid: AllowSecretManagerAccess
+</span></span></span><span class="line"><span class="cl"><span class="s">          Effect: Allow
+</span></span></span><span class="line"><span class="cl"><span class="s">          Action:
+</span></span></span><span class="line"><span class="cl"><span class="s">          - secretsmanager:GetSecretValue
+</span></span></span><span class="line"><span class="cl"><span class="s">          - secretsmanager:DescribeSecret
+</span></span></span><span class="line"><span class="cl"><span class="s">          Resource:
+</span></span></span><span class="line"><span class="cl"><span class="s">          - &#34;arn:aws:secretsmanager:*:*:secret:*&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">        - Sid: AllowKMSAccess
+</span></span></span><span class="line"><span class="cl"><span class="s">          Effect: Allow
+</span></span></span><span class="line"><span class="cl"><span class="s">          Action:
+</span></span></span><span class="line"><span class="cl"><span class="s">          - kms:Decrypt
+</span></span></span><span class="line"><span class="cl"><span class="s">          Resource:
+</span></span></span><span class="line"><span class="cl"><span class="s">          - &#34;${KMS_KEY_ARN}&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">vpc:
+</span></span></span><span class="line"><span class="cl"><span class="s">  nat:
+</span></span></span><span class="line"><span class="cl"><span class="s">    gateway: Disable
+</span></span></span><span class="line"><span class="cl"><span class="s">managedNodeGroups:
+</span></span></span><span class="line"><span class="cl"><span class="s">  - name: managed-ng-1
+</span></span></span><span class="line"><span class="cl"><span class="s">    amiFamily: Bottlerocket
+</span></span></span><span class="line"><span class="cl"><span class="s">    instanceType: t3.xlarge
+</span></span></span><span class="line"><span class="cl"><span class="s">    instancePrefix: ruzickap
+</span></span></span><span class="line"><span class="cl"><span class="s">    desiredCapacity: 3
+</span></span></span><span class="line"><span class="cl"><span class="s">    minSize: 2
+</span></span></span><span class="line"><span class="cl"><span class="s">    maxSize: 5
+</span></span></span><span class="line"><span class="cl"><span class="s">    volumeSize: 30
+</span></span></span><span class="line"><span class="cl"><span class="s">    labels:
+</span></span></span><span class="line"><span class="cl"><span class="s">      role: worker
+</span></span></span><span class="line"><span class="cl"><span class="s">    tags: *tags
+</span></span></span><span class="line"><span class="cl"><span class="s">    iam:
+</span></span></span><span class="line"><span class="cl"><span class="s">      withAddonPolicies:
+</span></span></span><span class="line"><span class="cl"><span class="s">        autoScaler: true
+</span></span></span><span class="line"><span class="cl"><span class="s">        cloudWatch: true
+</span></span></span><span class="line"><span class="cl"><span class="s">        ebs: true
+</span></span></span><span class="line"><span class="cl"><span class="s">        efs: true
+</span></span></span><span class="line"><span class="cl"><span class="s">    maxPodsPerNode: 1000
+</span></span></span><span class="line"><span class="cl"><span class="s">    volumeEncrypted: true
+</span></span></span><span class="line"><span class="cl"><span class="s">    volumeKmsKeyID: ${KMS_KEY_ID}
+</span></span></span><span class="line"><span class="cl"><span class="s">fargateProfiles:
+</span></span></span><span class="line"><span class="cl"><span class="s">  - name: fp-fgtest
+</span></span></span><span class="line"><span class="cl"><span class="s">    selectors:
+</span></span></span><span class="line"><span class="cl"><span class="s">      - namespace: fgtest
+</span></span></span><span class="line"><span class="cl"><span class="s">    tags: *tags
+</span></span></span><span class="line"><span class="cl"><span class="s">secretsEncryption:
+</span></span></span><span class="line"><span class="cl"><span class="s">  keyARN: ${KMS_KEY_ARN}
+</span></span></span><span class="line"><span class="cl"><span class="s">cloudWatch:
+</span></span></span><span class="line"><span class="cl"><span class="s">  clusterLogging:
+</span></span></span><span class="line"><span class="cl"><span class="s">    enableTypes:
+</span></span></span><span class="line"><span class="cl"><span class="s">      - authenticator
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> ! eksctl get clusters --name<span class="o">=</span><span class="s2">&#34;</span><span class="si">${</span><span class="nv">CLUSTER_NAME</span><span class="si">}</span><span class="s2">&#34;</span> <span class="p">&amp;</span>&gt; /dev/null<span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">  eksctl create cluster --config-file <span class="s2">&#34;tmp/</span><span class="si">${</span><span class="nv">CLUSTER_FQDN</span><span class="si">}</span><span class="s2">/eksctl.yaml&#34;</span> --kubeconfig <span class="s2">&#34;</span><span class="si">${</span><span class="nv">KUBECONFIG</span><span class="si">}</span><span class="s2">&#34;</span> --without-nodegroup
+</span></span><span class="line"><span class="cl">  kubectl delete daemonset -n kube-system aws-node
+</span></span><span class="line"><span class="cl">  kubectl apply -f https://docs.projectcalico.org/archive/v3.20/manifests/calico-vxlan.yaml
+</span></span><span class="line"><span class="cl">  eksctl create nodegroup --config-file <span class="s2">&#34;tmp/</span><span class="si">${</span><span class="nv">CLUSTER_FQDN</span><span class="si">}</span><span class="s2">/eksctl.yaml&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="k">fi</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Output:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span><span class="lnt">147
+</span><span class="lnt">148
+</span><span class="lnt">149
+</span><span class="lnt">150
+</span><span class="lnt">151
+</span><span class="lnt">152
+</span><span class="lnt">153
+</span><span class="lnt">154
+</span><span class="lnt">155
+</span><span class="lnt">156
+</span><span class="lnt">157
+</span><span class="lnt">158
+</span><span class="lnt">159
+</span><span class="lnt">160
+</span><span class="lnt">161
+</span><span class="lnt">162
+</span><span class="lnt">163
+</span><span class="lnt">164
+</span><span class="lnt">165
+</span><span class="lnt">166
+</span><span class="lnt">167
+</span><span class="lnt">168
+</span><span class="lnt">169
+</span><span class="lnt">170
+</span><span class="lnt">171
+</span><span class="lnt">172
+</span><span class="lnt">173
+</span><span class="lnt">174
+</span><span class="lnt">175
+</span><span class="lnt">176
+</span><span class="lnt">177
+</span><span class="lnt">178
+</span><span class="lnt">179
+</span><span class="lnt">180
+</span><span class="lnt">181
+</span><span class="lnt">182
+</span><span class="lnt">183
+</span><span class="lnt">184
+</span><span class="lnt">185
+</span><span class="lnt">186
+</span><span class="lnt">187
+</span><span class="lnt">188
+</span><span class="lnt">189
+</span><span class="lnt">190
+</span><span class="lnt">191
+</span><span class="lnt">192
+</span><span class="lnt">193
+</span><span class="lnt">194
+</span><span class="lnt">195
+</span><span class="lnt">196
+</span><span class="lnt">197
+</span><span class="lnt">198
+</span><span class="lnt">199
+</span><span class="lnt">200
+</span><span class="lnt">201
+</span><span class="lnt">202
+</span><span class="lnt">203
+</span><span class="lnt">204
+</span><span class="lnt">205
+</span><span class="lnt">206
+</span><span class="lnt">207
+</span><span class="lnt">208
+</span><span class="lnt">209
+</span><span class="lnt">210
+</span><span class="lnt">211
+</span><span class="lnt">212
+</span><span class="lnt">213
+</span><span class="lnt">214
+</span><span class="lnt">215
+</span><span class="lnt">216
+</span><span class="lnt">217
+</span><span class="lnt">218
+</span><span class="lnt">219
+</span><span class="lnt">220
+</span><span class="lnt">221
+</span><span class="lnt">222
+</span><span class="lnt">223
+</span><span class="lnt">224
+</span><span class="lnt">225
+</span><span class="lnt">226
+</span><span class="lnt">227
+</span><span class="lnt">228
+</span><span class="lnt">229
+</span><span class="lnt">230
+</span><span class="lnt">231
+</span><span class="lnt">232
+</span><span class="lnt">233
+</span><span class="lnt">234
+</span><span class="lnt">235
+</span><span class="lnt">236
+</span><span class="lnt">237
+</span><span class="lnt">238
+</span><span class="lnt">239
+</span><span class="lnt">240
+</span><span class="lnt">241
+</span><span class="lnt">242
+</span><span class="lnt">243
+</span><span class="lnt">244
+</span><span class="lnt">245
+</span><span class="lnt">246
+</span><span class="lnt">247
+</span><span class="lnt">248
+</span><span class="lnt">249
+</span><span class="lnt">250
+</span><span class="lnt">251
+</span><span class="lnt">252
+</span><span class="lnt">253
+</span><span class="lnt">254
+</span><span class="lnt">255
+</span><span class="lnt">256
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">2021-11-29 17:52:50 [ℹ]  eksctl version 0.75.0
+</span></span><span class="line"><span class="cl">2021-11-29 17:52:50 [ℹ]  using region eu-west-1
+</span></span><span class="line"><span class="cl">2021-11-29 17:52:50 [ℹ]  subnets for eu-west-1a - public:192.168.0.0/19 private:192.168.64.0/19
+</span></span><span class="line"><span class="cl">2021-11-29 17:52:50 [ℹ]  subnets for eu-west-1b - public:192.168.32.0/19 private:192.168.96.0/19
+</span></span><span class="line"><span class="cl">2021-11-29 17:52:50 [ℹ]  using Kubernetes version 1.21
+</span></span><span class="line"><span class="cl">2021-11-29 17:52:50 [ℹ]  creating EKS cluster &#34;kube1&#34; in &#34;eu-west-1&#34; region with Fargate profile
+</span></span><span class="line"><span class="cl">2021-11-29 17:52:50 [ℹ]  will create a CloudFormation stack for cluster itself and 0 nodegroup stack(s)
+</span></span><span class="line"><span class="cl">2021-11-29 17:52:50 [ℹ]  will create a CloudFormation stack for cluster itself and 0 managed nodegroup stack(s)
+</span></span><span class="line"><span class="cl">2021-11-29 17:52:50 [ℹ]  if you encounter any issues, check CloudFormation console or try &#39;eksctl utils describe-stacks --region=eu-west-1 --cluster=kube1&#39;
+</span></span><span class="line"><span class="cl">2021-11-29 17:52:50 [ℹ]  Kubernetes API endpoint access will use default of {publicAccess=true, privateAccess=false} for cluster &#34;kube1&#34; in &#34;eu-west-1&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 17:52:50 [ℹ]
+</span></span><span class="line"><span class="cl">2 sequential tasks: { create cluster control plane &#34;kube1&#34;,
+</span></span><span class="line"><span class="cl">    7 sequential sub-tasks: {
+</span></span><span class="line"><span class="cl">        wait for control plane to become ready,
+</span></span><span class="line"><span class="cl">        tag cluster,
+</span></span><span class="line"><span class="cl">        update CloudWatch logging configuration,
+</span></span><span class="line"><span class="cl">        create fargate profiles,
+</span></span><span class="line"><span class="cl">        associate IAM OIDC provider,
+</span></span><span class="line"><span class="cl">        14 parallel sub-tasks: {
+</span></span><span class="line"><span class="cl">            2 sequential sub-tasks: {
+</span></span><span class="line"><span class="cl">                create IAM role for serviceaccount &#34;kube-system/aws-load-balancer-controller&#34;,
+</span></span><span class="line"><span class="cl">                create serviceaccount &#34;kube-system/aws-load-balancer-controller&#34;,
+</span></span><span class="line"><span class="cl">            },
+</span></span><span class="line"><span class="cl">            2 sequential sub-tasks: {
+</span></span><span class="line"><span class="cl">                create IAM role for serviceaccount &#34;cert-manager/cert-manager&#34;,
+</span></span><span class="line"><span class="cl">                create serviceaccount &#34;cert-manager/cert-manager&#34;,
+</span></span><span class="line"><span class="cl">            },
+</span></span><span class="line"><span class="cl">            2 sequential sub-tasks: {
+</span></span><span class="line"><span class="cl">                create IAM role for serviceaccount &#34;kube-system/cluster-autoscaler&#34;,
+</span></span><span class="line"><span class="cl">                create serviceaccount &#34;kube-system/cluster-autoscaler&#34;,
+</span></span><span class="line"><span class="cl">            },
+</span></span><span class="line"><span class="cl">            2 sequential sub-tasks: {
+</span></span><span class="line"><span class="cl">                create IAM role for serviceaccount &#34;external-dns/external-dns&#34;,
+</span></span><span class="line"><span class="cl">                create serviceaccount &#34;external-dns/external-dns&#34;,
+</span></span><span class="line"><span class="cl">            },
+</span></span><span class="line"><span class="cl">            2 sequential sub-tasks: {
+</span></span><span class="line"><span class="cl">                create IAM role for serviceaccount &#34;kube-system/ebs-csi-controller-sa&#34;,
+</span></span><span class="line"><span class="cl">                create serviceaccount &#34;kube-system/ebs-csi-controller-sa&#34;,
+</span></span><span class="line"><span class="cl">            },
+</span></span><span class="line"><span class="cl">            2 sequential sub-tasks: {
+</span></span><span class="line"><span class="cl">                create IAM role for serviceaccount &#34;harbor/harbor&#34;,
+</span></span><span class="line"><span class="cl">                create serviceaccount &#34;harbor/harbor&#34;,
+</span></span><span class="line"><span class="cl">            },
+</span></span><span class="line"><span class="cl">            2 sequential sub-tasks: {
+</span></span><span class="line"><span class="cl">                create IAM role for serviceaccount &#34;velero/velero&#34;,
+</span></span><span class="line"><span class="cl">                create serviceaccount &#34;velero/velero&#34;,
+</span></span><span class="line"><span class="cl">            },
+</span></span><span class="line"><span class="cl">            2 sequential sub-tasks: {
+</span></span><span class="line"><span class="cl">                create IAM role for serviceaccount &#34;s3-test/s3-test&#34;,
+</span></span><span class="line"><span class="cl">                create serviceaccount &#34;s3-test/s3-test&#34;,
+</span></span><span class="line"><span class="cl">            },
+</span></span><span class="line"><span class="cl">            2 sequential sub-tasks: {
+</span></span><span class="line"><span class="cl">                create IAM role for serviceaccount &#34;kube-prometheus-stack/grafana&#34;,
+</span></span><span class="line"><span class="cl">                create serviceaccount &#34;kube-prometheus-stack/grafana&#34;,
+</span></span><span class="line"><span class="cl">            },
+</span></span><span class="line"><span class="cl">            2 sequential sub-tasks: {
+</span></span><span class="line"><span class="cl">                create IAM role for serviceaccount &#34;kube-prometheus-stack/kube-prometheus-stack-prometheus&#34;,
+</span></span><span class="line"><span class="cl">                create serviceaccount &#34;kube-prometheus-stack/kube-prometheus-stack-prometheus&#34;,
+</span></span><span class="line"><span class="cl">            },
+</span></span><span class="line"><span class="cl">            2 sequential sub-tasks: {
+</span></span><span class="line"><span class="cl">                create IAM role for serviceaccount &#34;kube-system/efs-csi-controller-sa&#34;,
+</span></span><span class="line"><span class="cl">                create serviceaccount &#34;kube-system/efs-csi-controller-sa&#34;,
+</span></span><span class="line"><span class="cl">            },
+</span></span><span class="line"><span class="cl">            2 sequential sub-tasks: {
+</span></span><span class="line"><span class="cl">                create IAM role for serviceaccount &#34;vault/vault&#34;,
+</span></span><span class="line"><span class="cl">                create serviceaccount &#34;vault/vault&#34;,
+</span></span><span class="line"><span class="cl">            },
+</span></span><span class="line"><span class="cl">            2 sequential sub-tasks: {
+</span></span><span class="line"><span class="cl">                create IAM role for serviceaccount &#34;kuard/kuard&#34;,
+</span></span><span class="line"><span class="cl">                create serviceaccount &#34;kuard/kuard&#34;,
+</span></span><span class="line"><span class="cl">            },
+</span></span><span class="line"><span class="cl">            2 sequential sub-tasks: {
+</span></span><span class="line"><span class="cl">                create IAM role for serviceaccount &#34;kube-system/aws-node&#34;,
+</span></span><span class="line"><span class="cl">                create serviceaccount &#34;kube-system/aws-node&#34;,
+</span></span><span class="line"><span class="cl">            },
+</span></span><span class="line"><span class="cl">        },
+</span></span><span class="line"><span class="cl">        restart daemonset &#34;kube-system/aws-node&#34;,
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">2021-11-29 17:52:50 [ℹ]  building cluster stack &#34;eksctl-kube1-cluster&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 17:52:50 [ℹ]  deploying stack &#34;eksctl-kube1-cluster&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 17:53:21 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-cluster&#34;
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">2021-11-29 18:05:55 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-cluster&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:07:59 [✔]  tagged EKS cluster (Owner=petr.ruzicka@gmail.com, Squad=Cloud_Container_Platform, compliance:na:defender=bottlerocket, Environment=Dev, Group=Cloud_Native)
+</span></span><span class="line"><span class="cl">2021-11-29 18:08:00 [ℹ]  waiting for requested &#34;LoggingUpdate&#34; in cluster &#34;kube1&#34; to succeed
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">2021-11-29 18:08:53 [ℹ]  waiting for requested &#34;LoggingUpdate&#34; in cluster &#34;kube1&#34; to succeed
+</span></span><span class="line"><span class="cl">2021-11-29 18:08:54 [✔]  configured CloudWatch logging for cluster &#34;kube1&#34; in &#34;eu-west-1&#34; (enabled types: authenticator &amp; disabled types: api, audit, controllerManager, scheduler)
+</span></span><span class="line"><span class="cl">2021-11-29 18:08:54 [ℹ]  creating Fargate profile &#34;fp-fgtest&#34; on EKS cluster &#34;kube1&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:13:12 [ℹ]  created Fargate profile &#34;fp-fgtest&#34; on EKS cluster &#34;kube1&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:44 [ℹ]  building iamserviceaccount stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-system-aws-load-balancer-controller&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:44 [ℹ]  building iamserviceaccount stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-prometheus-stack-grafana&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:44 [ℹ]  building iamserviceaccount stack &#34;eksctl-kube1-addon-iamserviceaccount-velero-velero&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:44 [ℹ]  building iamserviceaccount stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-system-efs-csi-controller-sa&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:44 [ℹ]  building iamserviceaccount stack &#34;eksctl-kube1-addon-iamserviceaccount-kuard-kuard&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:44 [ℹ]  building iamserviceaccount stack &#34;eksctl-kube1-addon-iamserviceaccount-cert-manager-cert-manager&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:44 [ℹ]  building iamserviceaccount stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-system-aws-node&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:44 [ℹ]  building iamserviceaccount stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-system-ebs-csi-controller-sa&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:44 [ℹ]  building iamserviceaccount stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-system-cluster-autoscaler&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:44 [ℹ]  building iamserviceaccount stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-prometheus-stack-kube-prometheus-stack-prometheus&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:44 [ℹ]  building iamserviceaccount stack &#34;eksctl-kube1-addon-iamserviceaccount-external-dns-external-dns&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:44 [ℹ]  building iamserviceaccount stack &#34;eksctl-kube1-addon-iamserviceaccount-s3-test-s3-test&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:44 [ℹ]  building iamserviceaccount stack &#34;eksctl-kube1-addon-iamserviceaccount-vault-vault&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:44 [ℹ]  building iamserviceaccount stack &#34;eksctl-kube1-addon-iamserviceaccount-harbor-harbor&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:45 [ℹ]  deploying stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-system-cluster-autoscaler&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:45 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-system-cluster-autoscaler&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:45 [ℹ]  deploying stack &#34;eksctl-kube1-addon-iamserviceaccount-harbor-harbor&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:45 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-harbor-harbor&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:45 [ℹ]  deploying stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-prometheus-stack-grafana&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:45 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-prometheus-stack-grafana&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:45 [ℹ]  deploying stack &#34;eksctl-kube1-addon-iamserviceaccount-s3-test-s3-test&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:45 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-s3-test-s3-test&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:45 [ℹ]  deploying stack &#34;eksctl-kube1-addon-iamserviceaccount-cert-manager-cert-manager&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:45 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-cert-manager-cert-manager&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:45 [ℹ]  deploying stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-system-efs-csi-controller-sa&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:45 [ℹ]  deploying stack &#34;eksctl-kube1-addon-iamserviceaccount-vault-vault&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:45 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-system-efs-csi-controller-sa&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:45 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-vault-vault&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:45 [ℹ]  deploying stack &#34;eksctl-kube1-addon-iamserviceaccount-velero-velero&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:45 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-velero-velero&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:45 [ℹ]  deploying stack &#34;eksctl-kube1-addon-iamserviceaccount-kuard-kuard&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:45 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-kuard-kuard&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:45 [ℹ]  deploying stack &#34;eksctl-kube1-addon-iamserviceaccount-external-dns-external-dns&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:45 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-external-dns-external-dns&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:45 [ℹ]  deploying stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-prometheus-stack-kube-prometheus-stack-prometheus&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:45 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-prometheus-stack-kube-prometheus-stack-prometheus&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:45 [ℹ]  deploying stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-system-aws-node&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:45 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-system-aws-node&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:45 [ℹ]  deploying stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-system-aws-load-balancer-controller&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:45 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-system-aws-load-balancer-controller&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:45 [ℹ]  deploying stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-system-ebs-csi-controller-sa&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:17:45 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-system-ebs-csi-controller-sa&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:00 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-system-cluster-autoscaler&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:00 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-prometheus-stack-grafana&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:01 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-velero-velero&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:02 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-system-aws-load-balancer-controller&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:02 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-harbor-harbor&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:02 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-s3-test-s3-test&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:02 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-system-ebs-csi-controller-sa&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:03 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-cert-manager-cert-manager&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:03 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-vault-vault&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:03 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-kuard-kuard&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:04 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-system-efs-csi-controller-sa&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:04 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-system-aws-node&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:04 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-prometheus-stack-kube-prometheus-stack-prometheus&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:05 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-external-dns-external-dns&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:17 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-harbor-harbor&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:18 [ℹ]  created namespace &#34;harbor&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:18 [ℹ]  created serviceaccount &#34;harbor/harbor&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:18 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-s3-test-s3-test&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:18 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-system-cluster-autoscaler&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:18 [ℹ]  created namespace &#34;s3-test&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:18 [ℹ]  created serviceaccount &#34;s3-test/s3-test&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:19 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-velero-velero&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:19 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-cert-manager-cert-manager&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:19 [ℹ]  created namespace &#34;velero&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:19 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-system-aws-load-balancer-controller&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:20 [ℹ]  created serviceaccount &#34;velero/velero&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:20 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-vault-vault&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:20 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-prometheus-stack-grafana&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:21 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-prometheus-stack-kube-prometheus-stack-prometheus&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:21 [ℹ]  created namespace &#34;kube-prometheus-stack&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:21 [ℹ]  created serviceaccount &#34;kube-prometheus-stack/kube-prometheus-stack-prometheus&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:21 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-system-ebs-csi-controller-sa&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:21 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-kuard-kuard&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:24 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-system-efs-csi-controller-sa&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:24 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-external-dns-external-dns&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:24 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-system-aws-node&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:24 [ℹ]  serviceaccount &#34;kube-system/aws-node&#34; already exists
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:24 [ℹ]  updated serviceaccount &#34;kube-system/aws-node&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:35 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-system-cluster-autoscaler&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:36 [ℹ]  created serviceaccount &#34;kube-system/cluster-autoscaler&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:37 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-prometheus-stack-grafana&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:38 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-kuard-kuard&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:38 [ℹ]  created serviceaccount &#34;kube-prometheus-stack/grafana&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:38 [ℹ]  created namespace &#34;kuard&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:38 [ℹ]  created serviceaccount &#34;kuard/kuard&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:38 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-vault-vault&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:38 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-cert-manager-cert-manager&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:38 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-system-aws-load-balancer-controller&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:38 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-system-ebs-csi-controller-sa&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:38 [ℹ]  created namespace &#34;vault&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:39 [ℹ]  created serviceaccount &#34;vault/vault&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:39 [ℹ]  created namespace &#34;cert-manager&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:39 [ℹ]  created serviceaccount &#34;cert-manager/cert-manager&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:39 [ℹ]  created serviceaccount &#34;kube-system/aws-load-balancer-controller&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:39 [ℹ]  created serviceaccount &#34;kube-system/ebs-csi-controller-sa&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:41 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-external-dns-external-dns&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:42 [ℹ]  created namespace &#34;external-dns&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:42 [ℹ]  created serviceaccount &#34;external-dns/external-dns&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:42 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-addon-iamserviceaccount-kube-system-efs-csi-controller-sa&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:43 [ℹ]  created serviceaccount &#34;kube-system/efs-csi-controller-sa&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:43 [ℹ]  daemonset &#34;kube-system/aws-node&#34; restarted
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:43 [ℹ]  waiting for the control plane availability...
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:43 [✔]  saved kubeconfig as &#34;/Users/ruzickap/git/k8s-eks-bottlerocket-fargate/kubeconfig-kube1.conf&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:43 [ℹ]  no tasks
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:43 [✔]  all EKS cluster resources for &#34;kube1&#34; have been created
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:44 [ℹ]  kubectl command should work with &#34;/Users/ruzickap/git/k8s-eks-bottlerocket-fargate/kubeconfig-kube1.conf&#34;, try &#39;kubectl --kubeconfig=/Users/ruzickap/git/k8s-eks-bottlerocket-fargate/kubeconfig-kube1.conf get nodes&#39;
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:44 [✔]  EKS cluster &#34;kube1&#34; in &#34;eu-west-1&#34; region is ready
+</span></span><span class="line"><span class="cl">daemonset.apps &#34;aws-node&#34; deleted
+</span></span><span class="line"><span class="cl">configmap/calico-config created
+</span></span><span class="line"><span class="cl">customresourcedefinition.apiextensions.k8s.io/bgpconfigurations.crd.projectcalico.org created
+</span></span><span class="line"><span class="cl">customresourcedefinition.apiextensions.k8s.io/bgppeers.crd.projectcalico.org created
+</span></span><span class="line"><span class="cl">customresourcedefinition.apiextensions.k8s.io/blockaffinities.crd.projectcalico.org created
+</span></span><span class="line"><span class="cl">customresourcedefinition.apiextensions.k8s.io/clusterinformations.crd.projectcalico.org created
+</span></span><span class="line"><span class="cl">customresourcedefinition.apiextensions.k8s.io/felixconfigurations.crd.projectcalico.org created
+</span></span><span class="line"><span class="cl">customresourcedefinition.apiextensions.k8s.io/globalnetworkpolicies.crd.projectcalico.org created
+</span></span><span class="line"><span class="cl">customresourcedefinition.apiextensions.k8s.io/globalnetworksets.crd.projectcalico.org created
+</span></span><span class="line"><span class="cl">customresourcedefinition.apiextensions.k8s.io/hostendpoints.crd.projectcalico.org created
+</span></span><span class="line"><span class="cl">customresourcedefinition.apiextensions.k8s.io/ipamblocks.crd.projectcalico.org created
+</span></span><span class="line"><span class="cl">customresourcedefinition.apiextensions.k8s.io/ipamconfigs.crd.projectcalico.org created
+</span></span><span class="line"><span class="cl">customresourcedefinition.apiextensions.k8s.io/ipamhandles.crd.projectcalico.org created
+</span></span><span class="line"><span class="cl">customresourcedefinition.apiextensions.k8s.io/ippools.crd.projectcalico.org created
+</span></span><span class="line"><span class="cl">customresourcedefinition.apiextensions.k8s.io/kubecontrollersconfigurations.crd.projectcalico.org created
+</span></span><span class="line"><span class="cl">customresourcedefinition.apiextensions.k8s.io/networkpolicies.crd.projectcalico.org created
+</span></span><span class="line"><span class="cl">customresourcedefinition.apiextensions.k8s.io/networksets.crd.projectcalico.org created
+</span></span><span class="line"><span class="cl">clusterrole.rbac.authorization.k8s.io/calico-kube-controllers created
+</span></span><span class="line"><span class="cl">clusterrolebinding.rbac.authorization.k8s.io/calico-kube-controllers created
+</span></span><span class="line"><span class="cl">clusterrole.rbac.authorization.k8s.io/calico-node created
+</span></span><span class="line"><span class="cl">clusterrolebinding.rbac.authorization.k8s.io/calico-node created
+</span></span><span class="line"><span class="cl">daemonset.apps/calico-node created
+</span></span><span class="line"><span class="cl">serviceaccount/calico-node created
+</span></span><span class="line"><span class="cl">deployment.apps/calico-kube-controllers created
+</span></span><span class="line"><span class="cl">serviceaccount/calico-kube-controllers created
+</span></span><span class="line"><span class="cl">Warning: policy/v1beta1 PodDisruptionBudget is deprecated in v1.21+, unavailable in v1.25+; use policy/v1 PodDisruptionBudget
+</span></span><span class="line"><span class="cl">poddisruptionbudget.policy/calico-kube-controllers created
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:59 [ℹ]  eksctl version 0.75.0
+</span></span><span class="line"><span class="cl">2021-11-29 18:18:59 [ℹ]  using region eu-west-1
+</span></span><span class="line"><span class="cl">2021-11-29 18:19:15 [ℹ]  nodegroup &#34;managed-ng-1&#34; will use &#34;&#34; [Bottlerocket/1.21]
+</span></span><span class="line"><span class="cl">2021-11-29 18:19:32 [ℹ]  1 nodegroup (managed-ng-1) was included (based on the include/exclude rules)
+</span></span><span class="line"><span class="cl">2021-11-29 18:19:32 [ℹ]  will create a CloudFormation stack for each of 1 managed nodegroups in cluster &#34;kube1&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:19:32 [ℹ]
+</span></span><span class="line"><span class="cl">2 sequential tasks: { fix cluster compatibility, 1 task: { 1 task: { create managed nodegroup &#34;managed-ng-1&#34; } }
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">2021-11-29 18:19:32 [ℹ]  checking cluster stack for missing resources
+</span></span><span class="line"><span class="cl">2021-11-29 18:19:41 [ℹ]  cluster stack has all required resources
+</span></span><span class="line"><span class="cl">2021-11-29 18:19:41 [ℹ]  building managed nodegroup stack &#34;eksctl-kube1-nodegroup-managed-ng-1&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:19:41 [ℹ]  deploying stack &#34;eksctl-kube1-nodegroup-managed-ng-1&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:19:41 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-nodegroup-managed-ng-1&#34;
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">2021-11-29 18:22:59 [ℹ]  waiting for CloudFormation stack &#34;eksctl-kube1-nodegroup-managed-ng-1&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:23:00 [ℹ]  no tasks
+</span></span><span class="line"><span class="cl">2021-11-29 18:23:00 [✔]  created 0 nodegroup(s) in cluster &#34;kube1&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:23:00 [ℹ]  nodegroup &#34;managed-ng-1&#34; has 3 node(s)
+</span></span><span class="line"><span class="cl">2021-11-29 18:23:00 [ℹ]  node &#34;ip-192-168-31-11.eu-west-1.compute.internal&#34; is ready
+</span></span><span class="line"><span class="cl">2021-11-29 18:23:00 [ℹ]  node &#34;ip-192-168-56-82.eu-west-1.compute.internal&#34; is ready
+</span></span><span class="line"><span class="cl">2021-11-29 18:23:00 [ℹ]  node &#34;ip-192-168-60-184.eu-west-1.compute.internal&#34; is ready
+</span></span><span class="line"><span class="cl">2021-11-29 18:23:00 [ℹ]  waiting for at least 2 node(s) to become ready in &#34;managed-ng-1&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:23:00 [ℹ]  nodegroup &#34;managed-ng-1&#34; has 3 node(s)
+</span></span><span class="line"><span class="cl">2021-11-29 18:23:00 [ℹ]  node &#34;ip-192-168-31-11.eu-west-1.compute.internal&#34; is ready
+</span></span><span class="line"><span class="cl">2021-11-29 18:23:00 [ℹ]  node &#34;ip-192-168-56-82.eu-west-1.compute.internal&#34; is ready
+</span></span><span class="line"><span class="cl">2021-11-29 18:23:00 [ℹ]  node &#34;ip-192-168-60-184.eu-west-1.compute.internal&#34; is ready
+</span></span><span class="line"><span class="cl">2021-11-29 18:23:00 [✔]  created 1 managed nodegroup(s) in cluster &#34;kube1&#34;
+</span></span><span class="line"><span class="cl">2021-11-29 18:23:12 [ℹ]  checking security group configuration for all nodegroups
+</span></span><span class="line"><span class="cl">2021-11-29 18:23:12 [ℹ]  all nodegroups have up-to-date cloudformation templates
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>When the cluster is ready it immediately start pushing logs to CloudWatch under
+<code>/aws/eks/kube1/cluster</code>.</p>
+<p>Add add the user or role to the aws-auth ConfigMap. This is handy if you are
+using different user for cli operations and different user/role for accessing
+the AWS Console to see EKS Workloads in Cluster&rsquo;s tab.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="k">if</span> ! eksctl get iamidentitymapping --cluster<span class="o">=</span><span class="s2">&#34;</span><span class="si">${</span><span class="nv">CLUSTER_NAME</span><span class="si">}</span><span class="s2">&#34;</span> --region<span class="o">=</span><span class="s2">&#34;</span><span class="si">${</span><span class="nv">AWS_DEFAULT_REGION</span><span class="si">}</span><span class="s2">&#34;</span> --arn<span class="o">=</span><span class="si">${</span><span class="nv">AWS_CONSOLE_ADMIN_ROLE_ARN</span><span class="si">}</span><span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">  eksctl create iamidentitymapping --cluster<span class="o">=</span><span class="s2">&#34;</span><span class="si">${</span><span class="nv">CLUSTER_NAME</span><span class="si">}</span><span class="s2">&#34;</span> --region<span class="o">=</span><span class="s2">&#34;</span><span class="si">${</span><span class="nv">AWS_DEFAULT_REGION</span><span class="si">}</span><span class="s2">&#34;</span> --arn<span class="o">=</span><span class="s2">&#34;</span><span class="si">${</span><span class="nv">AWS_CONSOLE_ADMIN_ROLE_ARN</span><span class="si">}</span><span class="s2">&#34;</span> --group system:masters --username admin
+</span></span><span class="line"><span class="cl"><span class="k">fi</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Output:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">2021-11-29 18:23:13 [ℹ]  eksctl version 0.75.0
+</span></span><span class="line"><span class="cl">2021-11-29 18:23:13 [ℹ]  using region eu-west-1
+</span></span><span class="line"><span class="cl">2021-11-29 18:23:14 [ℹ]  adding identity &#34;arn:aws:iam::7xxxxxxxxxx7:role/AxxxxxxxxxxxxN&#34; to auth ConfigMap
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Check the nodes+pods and max number of nodes which can be scheduled on one node:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">kubectl get nodes,pods -o wide --all-namespaces
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Output:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">NAME                                                STATUS   ROLES    AGE   VERSION   INTERNAL-IP      EXTERNAL-IP     OS-IMAGE                               KERNEL-VERSION   CONTAINER-RUNTIME
+</span></span><span class="line"><span class="cl">node/ip-192-168-31-11.eu-west-1.compute.internal    Ready    &lt;none&gt;   81s   v1.21.6   192.168.31.11    54.194.69.158   Bottlerocket OS 1.4.1 (aws-k8s-1.21)   5.10.68          containerd://1.5.5+bottlerocket
+</span></span><span class="line"><span class="cl">node/ip-192-168-56-82.eu-west-1.compute.internal    Ready    &lt;none&gt;   86s   v1.21.6   192.168.56.82    3.250.52.238    Bottlerocket OS 1.4.1 (aws-k8s-1.21)   5.10.68          containerd://1.5.5+bottlerocket
+</span></span><span class="line"><span class="cl">node/ip-192-168-60-184.eu-west-1.compute.internal   Ready    &lt;none&gt;   84s   v1.21.6   192.168.60.184   54.75.89.58     Bottlerocket OS 1.4.1 (aws-k8s-1.21)   5.10.68          containerd://1.5.5+bottlerocket
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAMESPACE     NAME                                           READY   STATUS    RESTARTS   AGE     IP               NODE                                           NOMINATED NODE   READINESS GATES
+</span></span><span class="line"><span class="cl">kube-system   pod/calico-kube-controllers-6c85b56fcb-5g5cq   1/1     Running   0          4m16s   172.16.166.130   ip-192-168-56-82.eu-west-1.compute.internal    &lt;none&gt;           &lt;none&gt;
+</span></span><span class="line"><span class="cl">kube-system   pod/calico-node-4whs8                          1/1     Running   0          84s     192.168.60.184   ip-192-168-60-184.eu-west-1.compute.internal   &lt;none&gt;           &lt;none&gt;
+</span></span><span class="line"><span class="cl">kube-system   pod/calico-node-nbjsn                          1/1     Running   0          86s     192.168.56.82    ip-192-168-56-82.eu-west-1.compute.internal    &lt;none&gt;           &lt;none&gt;
+</span></span><span class="line"><span class="cl">kube-system   pod/calico-node-nnhwz                          1/1     Running   0          81s     192.168.31.11    ip-192-168-31-11.eu-west-1.compute.internal    &lt;none&gt;           &lt;none&gt;
+</span></span><span class="line"><span class="cl">kube-system   pod/coredns-7cc879f8db-ct5bp                   1/1     Running   0          21m     172.16.166.131   ip-192-168-56-82.eu-west-1.compute.internal    &lt;none&gt;           &lt;none&gt;
+</span></span><span class="line"><span class="cl">kube-system   pod/coredns-7cc879f8db-h4mbs                   1/1     Running   0          21m     172.16.166.129   ip-192-168-56-82.eu-west-1.compute.internal    &lt;none&gt;           &lt;none&gt;
+</span></span><span class="line"><span class="cl">kube-system   pod/kube-proxy-9c9wk                           1/1     Running   0          86s     192.168.56.82    ip-192-168-56-82.eu-west-1.compute.internal    &lt;none&gt;           &lt;none&gt;
+</span></span><span class="line"><span class="cl">kube-system   pod/kube-proxy-gqbt7                           1/1     Running   0          81s     192.168.31.11    ip-192-168-31-11.eu-west-1.compute.internal    &lt;none&gt;           &lt;none&gt;
+</span></span><span class="line"><span class="cl">kube-system   pod/kube-proxy-q7pzh                           1/1     Running   0          84s     192.168.60.184   ip-192-168-60-184.eu-west-1.compute.internal   &lt;none&gt;           &lt;none&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2020-12-10</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/hugo-loveit/2020-12-10-eks-test/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://blog-test.ruzicka.dev/hugo-loveit/2020-12-10-eks-test/" data-title="Test EKS Post" data-via="@Ruzicka_Petr" data-hashtags="EKS,Pipeline Templates"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://blog-test.ruzicka.dev/hugo-loveit/2020-12-10-eks-test/" data-hashtag="EKS"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://blog-test.ruzicka.dev/hugo-loveit/2020-12-10-eks-test/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://blog-test.ruzicka.dev/hugo-loveit/2020-12-10-eks-test/" data-title="Test EKS Post"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://blog-test.ruzicka.dev/hugo-loveit/2020-12-10-eks-test/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/hugo-loveit/tags/eks/">EKS</a>,&nbsp;<a href="/hugo-loveit/tags/pipeline-templates/">Pipeline Templates</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/hugo-loveit/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/hugo-loveit/readme/" class="prev" rel="prev" title="Image Test EKS Post"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Image Test EKS Post</a>
+            <a href="/hugo-loveit/2021-10-03-first_post/" class="next" rel="next" title="First_post">First_post<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments"><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.128.1">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://petr.ruzicka.dev" target="_blank">Petr Ruzicka</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/hugo-loveit/lib/katex/katex.min.css"><link rel="stylesheet" href="/hugo-loveit/lib/cookieconsent/cookieconsent.min.css"><script type="text/javascript" src="/hugo-loveit/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/hugo-loveit/lib/lunr/lunr.min.js"></script><script type="text/javascript" src="/hugo-loveit/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/hugo-loveit/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/hugo-loveit/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/hugo-loveit/lib/katex/katex.min.js"></script><script type="text/javascript" src="/hugo-loveit/lib/katex/contrib/auto-render.min.js"></script><script type="text/javascript" src="/hugo-loveit/lib/katex/contrib/copy-tex.min.js"></script><script type="text/javascript" src="/hugo-loveit/lib/katex/contrib/mhchem.min.js"></script><script type="text/javascript" src="/hugo-loveit/lib/cookieconsent/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":100},"comment":{"giscus":{"category":"General","categoryId":"DIC_kwDOIL_Pkc4CR711","darkTheme":"dark","emitMetadata":"0","inputPosition":"bottom","lang":"en","lazyLoading":false,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"0","repo":"ruzickap/blog-test.ruzicka.dev","repoId":"R_kgDOIL_PkQ"}},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/hugo-loveit/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/hugo-loveit/js/theme.min.js"></script></body>
+</html>
